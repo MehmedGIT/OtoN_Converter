@@ -45,25 +45,6 @@ process ocrd_anybaseocr_crop {
 	"""
 }
 
-process ocrd_skimage_binarize {
-	maxForks 1
-
-	input:
-		path mets_file
-		val input_dir
-		val output_dir
-
-	output:
-		val output_dir
-
-	script:
-	"""
-	source "${params.venv}"
-	ocrd-skimage-binarize -I ${input_dir} -O ${output_dir} -P method li
-	deactivate
-	"""
-}
-
 process ocrd_skimage_denoise {
 	maxForks 1
 
@@ -102,7 +83,7 @@ process ocrd_tesserocr_deskew {
 	"""
 }
 
-process ocrd_cis_ocropy_segment {
+process ocrd_tesserocr_segment {
 	maxForks 1
 
 	input:
@@ -116,7 +97,7 @@ process ocrd_cis_ocropy_segment {
 	script:
 	"""
 	source "${params.venv}"
-	ocrd-cis-ocropy-segment -I ${input_dir} -O ${output_dir} -P level-of-operation page
+	ocrd-tesserocr-segment -I ${input_dir} -O ${output_dir} -P shrink_polygons true
 	deactivate
 	"""
 }
@@ -140,7 +121,7 @@ process ocrd_cis_ocropy_dewarp {
 	"""
 }
 
-process ocrd_calamari_recognize {
+process ocrd_tesserocr_recognize {
 	maxForks 1
 
 	input:
@@ -154,7 +135,7 @@ process ocrd_calamari_recognize {
 	script:
 	"""
 	source "${params.venv}"
-	ocrd-calamari-recognize -I ${input_dir} -O ${output_dir} -P checkpoint_dir qurator-gt4histocr-1.0
+	ocrd-tesserocr-recognize -I ${input_dir} -O ${output_dir} -P textequiv_level glyph -P overwrite_segments true -P model GT4HistOCR_50000000.997_191951
 	deactivate
 	"""
 }
@@ -163,10 +144,9 @@ workflow {
 	main:
 		ocrd_cis_ocropy_binarize(params.mets, "OCR-D-IMG", "OCR-D-BIN")
 		ocrd_anybaseocr_crop(params.mets, ocrd_cis_ocropy_binarize.out, "OCR-D-CROP")
-		ocrd_skimage_binarize(params.mets, ocrd_anybaseocr_crop.out, "OCR-D-BIN2")
-		ocrd_skimage_denoise(params.mets, ocrd_skimage_binarize.out, "OCR-D-BIN-DENOISE")
+		ocrd_skimage_denoise(params.mets, ocrd_anybaseocr_crop.out, "OCR-D-BIN-DENOISE")
 		ocrd_tesserocr_deskew(params.mets, ocrd_skimage_denoise.out, "OCR-D-BIN-DENOISE-DESKEW")
-		ocrd_cis_ocropy_segment(params.mets, ocrd_tesserocr_deskew.out, "OCR-D-SEG")
-		ocrd_cis_ocropy_dewarp(params.mets, ocrd_cis_ocropy_segment.out, "OCR-D-SEG-LINE-RESEG-DEWARP")
-		ocrd_calamari_recognize(params.mets, ocrd_cis_ocropy_dewarp.out, "OCR-D-OCR")
+		ocrd_tesserocr_segment(params.mets, ocrd_tesserocr_deskew.out, "OCR-D-SEG")
+		ocrd_cis_ocropy_dewarp(params.mets, ocrd_tesserocr_segment.out, "OCR-D-SEG-DEWARP")
+		ocrd_tesserocr_recognize(params.mets, ocrd_cis_ocropy_dewarp.out, "OCR-D-OCR")
 }

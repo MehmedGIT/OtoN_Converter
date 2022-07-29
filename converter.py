@@ -1,8 +1,10 @@
 from os.path import exists, isfile
-import string
+from string import ascii_letters, digits
+import sys
+import getopt
 
 # Valid characters to be used in the ocrd file
-VALID_CHARS = f"-_.{string.ascii_letters}{string.digits}"
+VALID_CHARS = f"-_.{ascii_letters}{digits}"
 
 # All available processors.
 # The list follows alphabetical order. 
@@ -69,20 +71,21 @@ OCRD_PROCESSORS = [
   'ocrd-typegroups-classifier'
 ]
 
+
 class Converter:
   def __init__(self):
     # Convention:
     # ocrd_lines holds the number of lines
-    # of the input ocrd file
+    # of the input Ccrd file
     # for each line an inner list is created
     # to hold separate tokens of that line
     self.ocrd_lines = []
     # Convention:
-    # nextflow_lines holds the number of lines
-    # of the output nextflow file
+    # nf_lines holds the number of lines
+    # of the output Nextflow file
     # for each line an inner list is created
     # to hold separate tokens of that line
-    self.nextflow_lines = []
+    self.nf_lines = []
 
   def _print_ocrd_tokens(self):
     print(f"INFO: lines in the ocrd file: {len(self.ocrd_lines)}")
@@ -138,7 +141,7 @@ class Converter:
             print("Syntax error!")
             print(f"Invalid line {line_index+1}, invalid char: {token}!")
             print("Hint: Remove invalid tokens.")
-            return False
+            sys.exit(2)
         # Rule 2
         elif len(token) == 2:
           if token[0] == '-':
@@ -150,13 +153,13 @@ class Converter:
               print("Syntax error!")
               print(f"Invalid line {line_index+1}, invalid token: {token}!")
               print("Hint: Remove invalid tokens.")
-              return False
+              sys.exit(2)
           else:
             if token[0] not in VALID_CHARS or token[1] not in VALID_CHARS:
               print("Syntax error!")
               print(f"Invalid line {line_index+1}, invalid token: {token}!")  
               print("Hint: Remove invalid tokens.")
-              return False
+              sys.exit(2)
         # Rule 3
         else:
           for char in token:
@@ -165,9 +168,7 @@ class Converter:
               print(f"Invalid line {line_index+1}, invalid token: {token}!")  
               print("Hint: Remove invalid tokens.") 
               print(f"Hint: Tokens cannot contain character: {char}.")
-              return False
-
-    return True
+              sys.exit(2)
 
   # Rules:
   # 1. The first line starts 
@@ -209,7 +210,7 @@ class Converter:
       print(f"Expected: '{' '.join(expected)}', tokens: {len(expected)}.")
       print(f"Got: '{' '.join(first_line)}', tokens: {len(first_line)}.")
       print("Hint: Single spaces between the tokens are allowed.")
-      return False
+      sys.exit(2)
 
     # Validate lines starting from the second line 
     # (Rules 2-12)
@@ -221,7 +222,7 @@ class Converter:
         print(f"Invalid line: {line_index+1}, wrong token at {1}!")
         print(f"Token: {lines[line_index][0]}")
         print("Hint: Commands must start with a \".")
-        return False
+        sys.exit(2)
 
       # Validate the minimum amount of tokens needed 
       # (Rule 2)
@@ -236,7 +237,7 @@ class Converter:
         print(f"Invalid line {line_index+1}, low amount of tokens!")
         print("Hint: Each line must start with a \" and end with a \\.")
         print("Hint: Each line must have a processor call, an input file, and an output file.")
-        return False
+        sys.exit(2)
       
       # Validate the OCR-D processor call in the OCR-D command
       # (Rule 4)
@@ -245,7 +246,7 @@ class Converter:
         print("Syntax error!")
         print(f"Ivalid line: {line_index+1}, invalid token: {(lines[line_index][1])}!")
         print("Hint: ocrd-process is spelled incorrectly or does not exists.")
-        return False
+        sys.exit(2)
 
       # Validate the -I, -O, and -P 
       # (Rules 5-10)
@@ -260,7 +261,7 @@ class Converter:
             print("Syntax Error!")
             print(F"Invalid line: {line_index+1}, duplicate -I token at: {token_index}!")
             print("Hint: Only a single input token is allowed!")
-            return False
+            sys.exit(2)
           input_found = True
           # Validate the -I token
           # Exactly one token comes after the -I
@@ -270,7 +271,7 @@ class Converter:
             token_next == '-O' or token_next == '-P':
             print("Syntax Error!")
             print(F"Invalid line: {line_index+1}, wrong or missing input token for: {token_index}")
-            return False
+            sys.exit(2)
           else:
             processed_tokens.append(token_next)
           # print(f"InputToken: {token}, {token_next}")
@@ -281,7 +282,7 @@ class Converter:
             print("Syntax Error!")
             print(F"Invalid line: {line_index+1}, duplicate -O token at: {token_index}!")
             print("Hint: Only a single output token is allowed!")
-            return False
+            sys.exit(2)
           output_found = True
           # Validate the -O token
           # Exactly one token comes after the -O
@@ -291,7 +292,7 @@ class Converter:
             token_next == '-I' or token_next == '-P':
             print("Syntax Error!")
             print(F"Invalid line: {line_index+1}, wrong or missing output token for: {token_index}")
-            return False
+            sys.exit(2)
           else:
             processed_tokens.append(token_next)
           # print(f"OutputToken: {token}, {token_next}")
@@ -305,7 +306,7 @@ class Converter:
             token_next1 == '-I' or token_next1 == '-O':
             print("Syntax Error!")
             print(F"Invalid line: {line_index+1}, wrong or missing parameter token at: {token_index+1}")
-            return False
+            sys.exit(2)
           else:
             processed_tokens.append(token_next1)
 
@@ -314,7 +315,7 @@ class Converter:
             token_next1 == '-I' or token_next1 == '-O':
             print("Syntax Error!")
             print(F"Invalid line: {line_index+1}, wrong or missing parameter token at: {token_index+2}")
-            return False
+            sys.exit(2)
           else:
             processed_tokens.append(token_next2)
           # print(f"ParameterToken: {token}, {token_next1}, {token_next2}")
@@ -331,7 +332,7 @@ class Converter:
             print(f"Hint: Exactly one token must follow -I or -O.")
             print(f"Hint: Exactly two tokens must follow -P.")
             print("Tokens following -I, -O, and -P cannot be a \" or \\.")
-            return False
+            sys.exit(2)
 
       # Validate the end of an OCR-D command (Rule 11)
       if not lines[line_index][-2] == '"':
@@ -342,7 +343,7 @@ class Converter:
         print(f"Invalid line: {line_index+1}!")
         print("Hint: Commands must end with a single \".")
         print("Hint: No whitespaces before the \".")
-        return False
+        sys.exit(2)
 
       # Validate the end of a OCR-D line (Rule 12)
       if not lines[line_index][-1] == '\\':
@@ -353,20 +354,32 @@ class Converter:
         print("Syntax error!")
         print(f"Invalid line: {line_index+1}!")
         print("Hint: Lines must end with a single \\.")
-        return False
+        sys.exit(2)
 
     # Validate token symbols (Rule 13)
-    if not self._ocrd_validate_token_symbols(lines):
-      return False
-
-    return True
+    self._ocrd_validate_token_symbols(lines)
 
   # Rules
   # 1. The input parameter of the second line is the entry-point
   # 2. The input parameter of lines after the second line 
   # are the output parameters of the previous line 
   def _ocrd_validate_io_order(self, lines):
-    return False
+    prev_output = None
+    curr_input = None
+    curr_output = None
+
+    for line_index in range (1, len(lines)):
+      curr_line = lines[line_index]
+      curr_input = curr_line[curr_line.index('-I')+1]
+      curr_output = curr_line[curr_line.index('-O')+1]
+
+      if prev_output is not None:
+        if prev_output != curr_input:
+          print(f"Input/Output mismatch error!")
+          print(f"{prev_output} on line {line_index} does not match with {curr_input} on line {line_index+1}")
+          sys.exit(2)
+
+      prev_output = curr_output
 
   # Order:
   # 1. Validate token syntax
@@ -374,30 +387,23 @@ class Converter:
   # 3. Valudate input/output order
   def _validate_ocrd_file(self, filepath):
     if not exists(filepath):
-      print(f"{filepath} does not exist!")
+      print(f"OCR-D file {filepath} does not exist!")
+      sys.exit(2)
     if not isfile(filepath):
-      print(f"{filepath} is not a readable file!")
-
-    print(f"---Converter>_validate_ocrd_file> Validating {filepath}...")
+      print(f"OCR-D file {filepath} is not a readable file!")
+      sys.exit(2)
 
     # Extract tokens from a file
-    print(f"---Converter>_validate_ocrd_file> Extracting tokens...")
     self._ocrd_extract_tokens(filepath)
 
     # Print tokens on the screen
     # self._print_ocrd_tokens()
 
     # Validate token syntax 
-    if self._ocrd_validate_token_syntax(self.ocrd_lines):
-      print(f"---Converter>_validate_ocrd_file> Token syntax is valid...")
-    else:
-      print(f"---Converter>_validate_ocrd_file> Token syntax is invalid!")
+    self._ocrd_validate_token_syntax(self.ocrd_lines)
 
     # Validate inputs/outputs order
-    if self._ocrd_validate_io_order(self.ocrd_lines):
-      print(f"---Converter>_validate_ocrd_file> IO order is valid...")
-    else:
-      print(f"---Converter>_validate_ocrd_file> IO order is invalid!")
+    self._ocrd_validate_io_order(self.ocrd_lines)
 
   def _extract_ocrd_commands(self):
     ocrd_commands = []
@@ -412,104 +418,139 @@ class Converter:
           break
 
       line = self.ocrd_lines[line_index]
+      # Append ocrd- as a prexif
+      line[first_qm_index+1] = f"ocrd-{line[first_qm_index+1]}"
+      # Extract the ocr-d command without quotation marks
       sub_line = line[first_qm_index+1:last_qm_index]
       ocrd_commands.append(sub_line)
 
     return ocrd_commands
 
   def _print_nextflow_tokens(self):
-    print(f"INFO: lines in the nextflow file: {len(self.nextflow_lines)}")
+    print(f"INFO: lines in the nextflow file: {len(self.nf_lines)}")
     print(f"INFO: TOKENS ON LINES")
-    for i in range (0, len(self.nextflow_lines)):
-      print(f"nextflow_lines[{i}]: {self.nextflow_lines[i]}")
+    for i in range (0, len(self.nf_lines)):
+      print(f"nf_lines[{i}]: {self.nf_lines[i]}")
     print(f"INFO: TOKENS ON LINES END")
 
-  # Rules:
-  # 1. Create the default beginning of a Nextflow script
-  # 2. For each ocrd command (on each line) a separate 
+  # Rules:  # 1. Create the default beginning of a Nextflow script
+  # 2. For each ord command (on eachline) a separate 
   # Nextflow process is created
   # 3. Create the main workflow
-  def convert_OtoN(self, output_filepath):
-    self.nextflow_lines = []
+  def convert_OtoN(self, input_path, output_path):
+    self._validate_ocrd_file(input_path) 
+
+    self.nf_lines = []
 
     # Rule 1
     comment_line = "// enables a syntax extension that allows definition of module libraries"
-    self.nextflow_lines.append(comment_line.split(' '))
     dsl2 = "nextflow.enable.dsl = 2"
-    self.nextflow_lines.append(dsl2.split(' '))
-    self.nextflow_lines.append([])
+
+    self.nf_lines.append(comment_line)
+    self.nf_lines.append(dsl2)
+    self.nf_lines.append('\n')
 
     # The defaul pipeline parameters
-    # Set venv_path, workspace_path, and mets_path
+    # Set _venv_path, _workspace_path, and _mets_path appropriately
     comment_line = "// pipeline parameters"
-    self.nextflow_lines.append(comment_line.split(' '))
-    venv_path = "\$HOME/venv37-ocrd/bin/activate"
-    params_venv = f"params.venv = \"{venv_path}\""
-    self.nextflow_lines.append(params_venv.split(' '))
-    workspace_path = "$projectDir/ocrd-workspace/"
-    params_workspace = f"params.workspace = \"{workspace_path}\""
-    self.nextflow_lines.append(params_workspace.split(' '))
-    mets_path = "$projectDir/ocrd-workspace/mets.xml"
-    params_mets = f"params.mets = \"{mets_path}\""
-    self.nextflow_lines.append(params_mets.split(' '))
-    self.nextflow_lines.append([])
+    _venv_path = "\$HOME/venv37-ocrd/bin/activate"
+    params_venv = f"params.venv = \"{_venv_path}\""
+    _workspace_path = "$projectDir/ocrd-workspace/"
+    params_workspace = f"params.workspace = \"{_workspace_path}\""
+    _mets_path = "$projectDir/ocrd-workspace/mets.xml"
+    params_mets = f"params.mets = \"{_mets_path}\""
 
-    ocrd_commands = self._extract_ocrd_commands()
-
+    self.nf_lines.append(comment_line)
+    self.nf_lines.append(params_venv)
+    self.nf_lines.append(params_workspace)
+    self.nf_lines.append(params_mets)
+    self.nf_lines.append('')
 
     # Create the nextflow processes
     # Rule 2
-    nextflow_processes = []
-    for command in ocrd_commands:
+    ocrd_commands = self._extract_ocrd_commands()
+
+    BRACKETS = '{}'
+    nf_processes = []
+    for oc in ocrd_commands:
       # extract nextflow process name 
-      command[0] = f"ocrd-{command[0]}"
       # from the ocrd processor name
-      nextflow_process = f"{command[0].replace('-','_')}"
-      self.nextflow_lines.append(f"process {nextflow_process}".split(' '))
-      self.nextflow_lines.append(['{'])
-      self.nextflow_lines.append(['\t','maxForks', '1'])
-      self.nextflow_lines.append([])
-      self.nextflow_lines.append(['\t','input:'])
-      self.nextflow_lines.append(['\t','\t', 'path', 'mets_file'])
-      self.nextflow_lines.append([])
-      self.nextflow_lines.append(['\t','script:'])
-      self.nextflow_lines.append(['\t','"""'])
-      self.nextflow_lines.append(['\t','source', '"${params.venv}"'])
-      self.nextflow_lines.append(['\t',' '.join(command)])
-      self.nextflow_lines.append(['\t', 'deactivate'])
-      self.nextflow_lines.append(['\t', '"""'])
-      self.nextflow_lines.append(['}'])
-      self.nextflow_lines.append([])
-      nextflow_processes.append(nextflow_process)
+      nf_process = f"{oc[0].replace('-','_')}"
+      
+      # Find the input/output parameters of the ocrd command
+      in_index = oc.index('-I')
+      out_index = oc.index('-O')
+      oc_in = f"\"{oc[in_index+1]}\""
+      oc_out = f"\"{oc[out_index+1]}\""
+
+      # Replace the input/output parameters with their placeholders
+      oc[in_index+1] = f"${BRACKETS[0]}input_dir{BRACKETS[1]}"
+      oc[out_index+1] = f"${BRACKETS[0]}output_dir{BRACKETS[1]}"
+      oc_str = ' '.join(oc)
+      self.nf_lines.append(f"process {nf_process} {BRACKETS[0]}")
+      self.nf_lines.append('\tmaxForks 1')
+      self.nf_lines.append('')
+      self.nf_lines.append('\tinput:')
+      self.nf_lines.append('\t\tpath mets_file')
+      self.nf_lines.append('\t\tval input_dir')
+      self.nf_lines.append('\t\tval output_dir')
+      self.nf_lines.append('')
+      self.nf_lines.append('\toutput:')
+      self.nf_lines.append('\t\tval output_dir')
+      self.nf_lines.append('')
+      self.nf_lines.append('\tscript:')
+      self.nf_lines.append('\t"""')
+      self.nf_lines.append('\tsource "${params.venv}"')
+      self.nf_lines.append(f"\t{oc_str}")
+      self.nf_lines.append('\tdeactivate')
+      self.nf_lines.append('\t"""')
+      self.nf_lines.append(BRACKETS[1])
+      self.nf_lines.append('')
+      nf_processes.append([nf_process, oc_in, oc_out])
 
 
     # Create the main workflow
     # Rule 3
-    self.nextflow_lines.append(['workflow'])
-    self.nextflow_lines.append(['{'])
-    self.nextflow_lines.append(['\t','main:'])
-    for process in nextflow_processes:
-      self.nextflow_lines.append(['\t','\t', f'{process}(params.mets)'])
-    self.nextflow_lines.append(['}'])
+    self.nf_lines.append(f"workflow {BRACKETS[0]}")
+    self.nf_lines.append('\tmain:')
+    previous_nfp = None
+    for nfp in nf_processes:
+      if previous_nfp == None:
+        self.nf_lines.append(f"\t\t{nfp[0]}(params.mets, {nfp[1]}, {nfp[2]})")
+      else:
+        self.nf_lines.append(f"\t\t{nfp[0]}(params.mets, {previous_nfp}.out, {nfp[2]})")
+      previous_nfp = nfp[0]
+    self.nf_lines.append(f"{BRACKETS[1]}")
 
-
-    #self._print_nextflow_tokens()
+    # self._print_nextflow_tokens()
     # Write nextflow line tokens to an output file
-    with open(output_filepath, mode="w") as nextflow_file:
-      for token_line in self.nextflow_lines:
-        string_line = ' '.join(token_line)
-        nextflow_file.write(f"{string_line}\n")
+    with open(output_path, mode="w") as nextflow_file:
+      for token_line in self.nf_lines:
+        nextflow_file.write(f"{token_line}\n")
 
-def main():
-  print("main> Testing the converter")
+def main(argv):
+  input_path = ''
+  output_path = ''
+
+  try:
+    opts, args = getopt.getopt(argv,"hi:o:",["ifile=","ofile="])
+  except getopt.GetoptError:
+    print("python3 converter.py -i <input_path> -o <output_path>")
+    sys.exit(2)
+
+  for opt, arg in opts:
+    if opt == '-h':
+      print("python3 converter.py -i <input_path> -o <output_path>")
+      sys.exit()
+    elif opt in ("-i", "--ifile"):
+      input_path = arg
+    elif opt in ("-o", "--ofile"):
+      output_path = arg
+
   converter = Converter()
-
-  print("-------------------------------------------------------------")
-  workflow1 = "workflow1.txt"
-  nextflow1 = "nextflow1.nf"
-  converter._validate_ocrd_file(workflow1)
-  print(f"---Converter>convert_OtoN> Converting {workflow1} to {nextflow1}")
-  converter.convert_OtoN("nextflow1.nf")
+  print(f"OtoN> In: {input_path}")
+  print(f"OtoN> Out: {output_path}")
+  converter.convert_OtoN(input_path, output_path)
 
 if __name__ == "__main__":
-    main()
+   main(sys.argv[1:])
