@@ -319,7 +319,7 @@ class Converter:
           # Exactly two tokens comes after the -P
           # The tokens must not be a '"' or '\'
           token_next1 = lines[line_index][token_index+1]
-          if token_next1 == QM or token_next1 == '\\' or \
+          if token_next1 == QM or token_next1 == BACKSLASH or \
             token_next1 == '-I' or token_next1 == '-O':
             print("Syntax Error!")
             print(F"Invalid line: {line_index+1}, wrong or missing parameter token at: {token_index+1}")
