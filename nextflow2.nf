@@ -1,8 +1,5 @@
-// enables a syntax extension that allows definition of module libraries
 nextflow.enable.dsl = 2
 
-
-// pipeline parameters
 params.venv = "\$HOME/venv37-ocrd/bin/activate"
 params.workspace = "$projectDir/ocrd-workspace/"
 params.mets = "$projectDir/ocrd-workspace/mets.xml"
