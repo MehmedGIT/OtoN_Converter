@@ -1,0 +1,3 @@
+venv_path = "./venv/bin/activate"
+workspace_path = "./ocrd-workspace/"
+mets_path = "./ocrd-workspace/mets.xml"
