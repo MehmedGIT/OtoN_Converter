@@ -1,8 +1,10 @@
-from asyncore import read
-import sys
 import getopt
-from ocrd_validator import OCRD_Validator
+import sys
+from asyncore import read
+
 import tomli
+
+from ocrd_validator import OCRD_Validator
 
 # SYMBOLS
 BRACKETS = '{}'
