@@ -4,6 +4,7 @@ Converter from basic OCRD process workflow to Nextflow workflow script
 ### 1. Requirements:
 1. Nextflow - Check the installation guide [here](https://www.nextflow.io/docs/latest/getstarted.html).
 2. OCR-D Software (ocrd processors to be used) installed locally - Check the installation guide [here](https://ocr-d.de/en/setup).
+3. tomli
 
 ### 2. Usage: 
 `python3 converter.py -i inputPath -o outputPath`

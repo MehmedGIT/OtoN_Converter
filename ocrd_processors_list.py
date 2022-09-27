@@ -1,6 +1,7 @@
-# All available processors.
-# The list follows alphabetical order. 
-# Source: https://ocr-d.de/en/workflows
+"""All available processors.
+ The list follows alphabetical order.
+ Source: https://ocr-d.de/en/workflows
+ """
 OCRD_PROCESSORS = [
   'ocrd-anybaseocr-block-segmentation',
   'ocrd-anybaseocr-crop',
