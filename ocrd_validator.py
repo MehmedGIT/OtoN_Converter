@@ -124,7 +124,7 @@ class OCRD_Validator:
         if token in (QM, BACKSLASH):
             return True
         else:
-            info = f"TOKEN_ERROR_RULE_01: Invalid token: {token}"
+            info = f"TOKEN_SYMBOL_ERROR_RULE_01: Invalid token: {token}"
             hint = "Single len tokens can be either a quotation mark or a backslash."
             self.__print_syntax_error(line_num=line_index, info=info, hint=hint)
             sys.exit(2)
@@ -134,7 +134,7 @@ class OCRD_Validator:
             if token[1] in ['I', 'O', 'P']:
                 return True
             else:
-                info = f"TOKEN_ERROR_RULE_02: Invalid token: {token}"
+                info = f"TOKEN_SYMBOL_ERROR_RULE_02: Invalid token: {token}"
                 hint = "Only I, O, or P can follow after the - (hyphen)."
                 self.__print_syntax_error(line_num=line_index, info=info, hint=hint)
                 sys.exit(2)
@@ -144,7 +144,7 @@ class OCRD_Validator:
     def __validate_token_symbols(self, line_index, token):
         for char in token:
             if char not in VALID_CHARS:
-                info = f"TOKEN_ERROR_RULE_03: Invalid token: {token}"
+                info = f"TOKEN_SYMBOL_ERROR_RULE_03: Invalid token: {token}"
                 hint = f"Tokens cannot contain character: {char}"
                 self.__print_syntax_error(line_num=line_index, info=info, hint=hint)
                 sys.exit(2)
@@ -205,31 +205,36 @@ class OCRD_Validator:
         if len(line) < min_amount:
             expected = f"At least {min_amount} tokens."
             got = f"{len(line)} tokens"
-            hint = 'LINE_ERROR_RULE_02: Each line must have a processor call, an input file, and an output file'
-            self.__print_syntax_error(line_num, expected=expected, got=got, hint=hint)
+            info = 'LINE_ERROR_RULE_02: Not enough tokens.'
+            hint = 'Each line must have a processor call, an input file, and an output file'
+            self.__print_syntax_error(line_num, info=info, expected=expected, got=got, hint=hint)
             sys.exit(2)
 
     def __validate_QM_tokens(self, line_num, first_qm_token, last_qm_token):
         if not first_qm_token == QM:
-            hint = 'TLINE_ERROR_RULE_03: OCR-D commands must start with a quotation mark'
-            self.__print_syntax_error(line_num, expected=QM, got=first_qm_token, hint=hint)
+            info = 'LINE_ERROR_RULE_03: Wrong start of the OCR-D command'
+            hint = 'OCR-D commands must start with a quotation mark'
+            self.__print_syntax_error(line_num, info=info, expected=QM, got=first_qm_token, hint=hint)
             sys.exit(2)
         if not last_qm_token == QM:
-            hint = 'LINE_ERROR_RULE_11: OCR-D commands must end with a quotation mark'
-            self.__print_syntax_error(line_num, expected=QM, got=last_qm_token, hint=hint)
+            info = 'LINE_ERROR_RULE_11: Wrong end of the OCR-D command'
+            hint = 'OCR-D commands must end with a quotation mark'
+            self.__print_syntax_error(line_num, info=info, expected=QM, got=last_qm_token, hint=hint)
             sys.exit(2)
 
     def __validate_BACKSLASH_token(self, line_num, token):
         if not token == BACKSLASH:
-            hint = 'LINE_ERROR_RULE_12: OCR-D lines must end with a backslash, except the last line'
-            self.__print_syntax_error(line_num, expected=BACKSLASH, got=token, hint=hint)
+            info = 'LINE_ERROR_RULE_12: Missing backslash at the end of line'
+            hint = 'OCR-D lines must end with a backslash, except the last line'
+            self.__print_syntax_error(line_num, info=info, expected=BACKSLASH, got=token, hint=hint)
             sys.exit(2)
 
     def __validate_ocrd_processor_token(self, line_num, token):
         ocrd_processor = f"ocrd-{token}"
         if ocrd_processor not in OCRD_PROCESSORS:
-            hint = 'LINE_ERROR_RULE_01: `ocrd process` is spelled incorrectly or does not exists'
-            self.__print_syntax_error(line_num, expected='ocrd-*', got=ocrd_processor, hint=hint)
+            info = f'LINE_ERROR_RULE_01: Unknown processor {token}'
+            hint = 'Processor is spelled incorrectly or does not exists'
+            self.__print_syntax_error(line_num, info=info, expected='ocrd-*', got=ocrd_processor, hint=hint)
             sys.exit(2)
 
     # Validate input, output and parameter tokens and their arguments
@@ -269,7 +274,7 @@ class OCRD_Validator:
                 processed_tokens.append(next_token)
                 processed_tokens.append(next_token2)
             else:
-                info = "INPUT_OUTPUT_ERROR: Unknown token found: {current_token}"
+                info = "UNEXPECTED_TOKEN_ERROR: Unknown token found: {current_token}"
                 index = "{token_index}"
                 self.__print_syntax_error(line_num, info=info, index=index)
 
@@ -286,7 +291,7 @@ class OCRD_Validator:
     def __is_valid_follow_up_token(self, line_num, previous_token, token, token2=None):
         # These tokens cannot be arguments passed to the previous_token
         forbidden_follow_ups = [QM, BACKSLASH, '-I', '-O', '-P']
-        info = f"FOLLOW_UP_TOKEN_ERROR: Wrong or missing arguments to {previous_token}"
+        info = f"ARGUMENT_TOKEN_ERROR: Wrong or missing arguments to {previous_token}"
 
         if previous_token == '-P':
             hint = f"{previous_token} takes exactly 2 arguments."
@@ -308,7 +313,7 @@ class OCRD_Validator:
         return True
 
     def __print_io_duplicate_error(self, line_num, index, token):
-        info = f"DUPLICATE_TOKENS_ERROR: Duplicate {token} found!"
+        info = f"DUPLICATE_TOKEN_ERROR: Duplicate {token} found!"
         hint = f"Only a single {token} is allowed!"
         self.__print_syntax_error(line_num, info=info, index=index, hint=hint)
 
