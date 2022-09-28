@@ -18,9 +18,10 @@ def cli():
               help='If set, then the dockerized variant of the Nextflow script is generated.')
 def convert(input_path, output_path, dockerized):
     converter = Converter()
-    print(f"OtoN> In: {input_path}")
-    print(f"OtoN> Out: {output_path}")
+    print(f"Converting from: {input_path}")
+    print(f"Converting to: {output_path}")
     converter.convert_OtoN(input_path, output_path, dockerized)
+    print(f"Convertion was successful!")
 
 @cli.command("validate", help="Validate an OCR-D workflow txt file")
 @click.option('-I', '--input_path',
@@ -28,4 +29,5 @@ def convert(input_path, output_path, dockerized):
               help='Path to the OCR-D workflow file to be validated.')
 def validate(input_path):
     OCRD_Validator().validate_ocrd_file(input_path)
-    print(f"Validation successful: {input_path}")
+    print(f"Validating: {input_path}")
+    print(f"Validation was successful!")

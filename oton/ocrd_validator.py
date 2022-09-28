@@ -1,17 +1,13 @@
 import sys
 from os.path import exists, isfile
-from string import ascii_letters, digits
 
 from .ocrd_processors_list import OCRD_PROCESSORS
-
-# Valid characters to be used in the ocrd file
-VALID_CHARS = f'-_.{ascii_letters}{digits}'
-
-# SYMBOLS
-BACKSLASH = '\\'
-# Quotation Mark
-QM = '"'
-SPACE = ' '
+from .constants import (
+    BACKSLASH,
+    QM,
+    SPACE,
+    VALID_CHARS
+)
 
 class OCRD_Validator:
     def __init__(self):

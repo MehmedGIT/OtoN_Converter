@@ -1,29 +1,24 @@
 import getopt
 import sys
 import tomli
-from pkg_resources import resource_filename
 from .ocrd_validator import OCRD_Validator
 
-TOML_CONFIG: str = resource_filename(__name__, 'config.toml')
+from .constants import (
+    BACKSLASH,
+    BRACKETS,
+    LF,
+    QM,
+    SPACE,
+    TAB,
+    TOML_CONFIG,
 
-# SYMBOLS
-BRACKETS = '{}'
-BACKSLASH = '\\'
-# Quotation Mark
-QM = '"'
-TAB = '\t'
-LF = '\n'
-SPACE = ' '
-
-# NEXTFLOW RELATED
-DSL2 = 'nextflow.enable.dsl = 2'
-# input/output dirs
-IN_DIR = 'input_dir'
-OUT_DIR = 'output_dir'
-# input/output dirs placeholders
-IN_DIR_PH = f'${BRACKETS[0]}{IN_DIR}{BRACKETS[1]}'
-OUT_DIR_PH = f'${BRACKETS[0]}{OUT_DIR}{BRACKETS[1]}'
-DOCKER_PREFIX = f'${BRACKETS[0]}params.docker_command{BRACKETS[1]}'
+    DSL2,
+    IN_DIR,
+    OUT_DIR,
+    IN_DIR_PH,
+    OUT_DIR_PH,
+    DOCKER_PREFIX
+)
 
 class Converter:
     def __init__(self):
@@ -163,32 +158,3 @@ class Converter:
         for i in range (0, len(self.nf_lines)):
             print(f"nf_lines[{i}]: {self.nf_lines[i]}")
         print("INFO: TOKENS ON LINES END")
-
-def main(argv):
-    input_path = ""
-    output_path = ""
-
-    try:
-        opts, args = getopt.getopt(argv,"hi:o:",["ifile=","ofile="])
-    except getopt.GetoptError:
-        print("python3 converter.py -i <input_path> -o <output_path>")
-        sys.exit(2)
-
-    for opt, arg in opts:
-        if opt == '-h':
-            print("python3 converter.py -i <input_path> -o <output_path>")
-            sys.exit()
-        elif opt in ("-i", "--ifile"):
-            input_path = arg
-        elif opt in ("-o", "--ofile"):
-            output_path = arg
-
-    converter = Converter()
-    print(f"OtoN> In: {input_path}")
-    print(f"OtoN> Out: {output_path}")
-    # Change dockerized to True to get the dockerized version of the Nextflow script
-    # TODO: This will be supported by the cli
-    converter.convert_OtoN(input_path, output_path, dockerized=False)
-
-if __name__ == "__main__":
-    main(sys.argv[1:])
