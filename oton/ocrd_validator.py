@@ -11,23 +11,21 @@ from .constants import (
 
 class OCRD_Validator:
     def __init__(self):
-        # ocrd_lines holds the number of lines of the input Ocrd file
-        # for each line an inner list is created to hold separate tokens of that line
-        self.ocrd_lines = []
+        pass
 
-    def extract_ocrd_commands(self):
+    def extract_ocrd_commands(ocrd_lines):
         ocrd_commands = []
-        for line_index in range(1, len(self.ocrd_lines)):
+        for line_index in range(1, len(ocrd_lines)):
             first_qm_index = 0
             last_qm_index = 0
 
-            for token_index in range(1, len(self.ocrd_lines[line_index])):
-                curr_token = self.ocrd_lines[line_index][token_index]
+            for token_index in range(1, len(ocrd_lines[line_index])):
+                curr_token = ocrd_lines[line_index][token_index]
                 if curr_token == QM:
                     last_qm_index = token_index
                     break
 
-            line = self.ocrd_lines[line_index]
+            line = ocrd_lines[line_index]
             # Append ocrd- as a prefix
             line[first_qm_index+1] = f"ocrd-{line[first_qm_index+1]}"
             # Extract the ocr-d command without quotation marks
@@ -38,10 +36,12 @@ class OCRD_Validator:
 
     def validate_ocrd_file(self, filepath):
         self._validate_ocrd_file_path(filepath)
-        self._extract_ocrd_tokens(filepath)
-        self._validate_ocrd_lines()
-        self._validate_ocrd_token_symbols()
-        self._validate_ocrd_io_order()
+        ocrd_lines = self._extract_ocrd_tokens(filepath)
+        self._validate_ocrd_lines(ocrd_lines)
+        self._validate_ocrd_token_symbols(ocrd_lines)
+        self._validate_ocrd_io_order(ocrd_lines)
+
+        return ocrd_lines
 
     def _validate_ocrd_file_path(self, filepath):
         if not exists(filepath):
@@ -55,7 +55,7 @@ class OCRD_Validator:
     # Rule 2: Each ocrd-process is a separate token
     # Rule 3: Each -I, -O, and -P is a separate token
     def _extract_ocrd_tokens(self, filepath):
-        self.ocrd_lines = []
+        ocrd_lines = []
 
         # Extract tokens from the ocrd_file
         # Unnecessary empty spaces/lines are discarded
@@ -78,18 +78,20 @@ class OCRD_Validator:
                         curr_line_tokens.append(token)
 
                 if len(curr_line_tokens) > 0:
-                    self.ocrd_lines.append(curr_line_tokens)
+                    ocrd_lines.append(curr_line_tokens)
+
+        return ocrd_lines
 
     # Rule 1: The input parameter of the second line is the entry-point
     # Rule 2: The input parameter of lines after the second line 
     # are the output parameters of the previous line 
-    def _validate_ocrd_io_order(self):
+    def _validate_ocrd_io_order(self, ocrd_lines):
         prev_output = None
         curr_input = None
         curr_output = None
 
-        for line_index in range (1, len(self.ocrd_lines)):
-            curr_line = self.ocrd_lines[line_index]
+        for line_index in range (1, len(ocrd_lines)):
+            curr_line = ocrd_lines[line_index]
             curr_input = curr_line[curr_line.index('-I')+1]
             curr_output = curr_line[curr_line.index('-O')+1]
 
@@ -104,11 +106,11 @@ class OCRD_Validator:
     # Rule 1: A single char token must be either: QM or BACKSLASH
     # Rule 2: A double char token must be either: -I, -O, or -P
     # Rule 3: Other tokens must contain only VALID_CHARS
-    def _validate_ocrd_token_symbols(self):
+    def _validate_ocrd_token_symbols(self, ocrd_lines):
         # Check for invalid symbols/tokens
-        for line_index in range (0, len(self.ocrd_lines)):
-            for token_index in range(0, len(self.ocrd_lines[line_index])):
-                current_token = self.ocrd_lines[line_index][token_index]
+        for line_index in range (0, len(ocrd_lines)):
+            for token_index in range(0, len(ocrd_lines[line_index])):
+                current_token = ocrd_lines[line_index][token_index]
                 if len(current_token) == 1:
                     self.__validate_single_len_token_symbols(line_index, token_index, current_token)
                 elif len(current_token) == 2:
@@ -158,13 +160,13 @@ class OCRD_Validator:
     # Warning: -P are not checked if they are supported or not by the specific OCR-D processors
     # Rule 11: Validate the end of an OCR-D command
     # Rule 12: Each line except the last one ends with a backslash (BACKSLASH)
-    def _validate_ocrd_lines(self):
-        self.__validate_first_line(self.ocrd_lines[0])
+    def _validate_ocrd_lines(self, ocrd_lines):
+        self.__validate_first_line(ocrd_lines[0])
 
-        for line_index in range(1, len(self.ocrd_lines)-2):
-            self.__validate_middle_line(line_index, self.ocrd_lines[line_index])
+        for line_index in range(1, len(ocrd_lines)-2):
+            self.__validate_middle_line(line_index, ocrd_lines[line_index])
 
-        self.__validate_last_line(len(self.ocrd_lines)-1, self.ocrd_lines[-1])
+        self.__validate_last_line(len(ocrd_lines)-1, ocrd_lines[-1])
 
     def __validate_first_line(self, line):
         expected = ' '.join(['ocrd', 'process', BACKSLASH])

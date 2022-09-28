@@ -31,8 +31,8 @@ class Converter:
 
     def convert_OtoN(self, input_path, output_path, dockerized=False):
         validator = OCRD_Validator()
-        validator.validate_ocrd_file(input_path)
-        ocrd_commands = validator.extract_ocrd_commands()
+        ocrd_lines = validator.validate_ocrd_file(input_path)
+        ocrd_commands = validator.extract_ocrd_commands(ocrd_lines)
 
         # Nextflow script lines
         self.nf_lines = []
