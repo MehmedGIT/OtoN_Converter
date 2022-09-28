@@ -1,6 +1,12 @@
+workspace_path = "$projectDir/ocrd-workspace/"
+mets_path = "$projectDir/ocrd-workspace/mets.xml"
+
+# Dockerized parameters
+docker_pwd = "/ocrd-workspace"
+docker_volume = "$params.workspace:$params.docker_pwd"
+docker_image = "ocrd/all:maximum"
+docker_command = "docker run --rm -u \\$(id -u) -v $params.docker_volume -w $params.docker_pwd -- $params.docker_image"
+
 # See https://www.nextflow.io/docs/latest/process.html#script for the difference
 # between NextFlow and Bash variables.
 venv_path = "\\$HOME/venv37-ocrd/bin/activate"
-
-workspace_path = "$projectDir/ocrd-workspace/"
-mets_path = "$projectDir/ocrd-workspace/mets.xml"
