@@ -1,8 +1,8 @@
 nextflow.enable.dsl = 2
 
-params.venv = "\$HOME/venv37-ocrd/bin/activate"
 params.workspace = "$projectDir/ocrd-workspace/"
 params.mets = "$projectDir/ocrd-workspace/mets.xml"
+params.venv = "\$HOME/venv37-ocrd/bin/activate"
 
 process ocrd_cis_ocropy_binarize {
 	maxForks 1

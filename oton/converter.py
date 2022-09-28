@@ -1,9 +1,10 @@
 import getopt
 import sys
-
 import tomli
+from pkg_resources import resource_filename
+from .ocrd_validator import OCRD_Validator
 
-from ocrd_validator import OCRD_Validator
+TOML_CONFIG: str = resource_filename(__name__, 'config.toml')
 
 # SYMBOLS
 BRACKETS = '{}'
@@ -59,7 +60,7 @@ class Converter:
         # I do not really like what is happening here
         # TODO: Maybe a config file is not the right approach or should be modified.
         # The default pipeline parameters
-        with open('config.toml', mode='rb') as toml_f:
+        with open(TOML_CONFIG, mode='rb') as toml_f:
             config = tomli.load(toml_f)
             workspace_path = config['workspace_path']
             mets_path = config['mets_path']
