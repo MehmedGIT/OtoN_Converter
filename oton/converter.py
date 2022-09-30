@@ -1,14 +1,9 @@
-import getopt
-import sys
 import tomli
 from .ocrd_validator import OCRD_Validator
 
 from .constants import (
-    BACKSLASH,
     BRACKETS,
-    LF,
     QM,
-    SPACE,
     TAB,
     TOML_CONFIG,
 
@@ -47,7 +42,7 @@ class Converter:
         self.__create_main_workflow(nf_processes)
 
         self.__write_to_nextflow_file(output_path)
-    
+
     def __create_default_nextflow_beginning(self, dockerized=False):
         self.nf_lines.append(DSL2)
         self.nf_lines.append('')
@@ -129,7 +124,7 @@ class Converter:
             nf_processes.append([nf_process_name, oc_in, oc_out])
 
         return nf_processes
-    
+
     def __create_main_workflow(self, nf_processes):
         self.nf_lines.append(f'workflow {BRACKETS[0]}')
         self.nf_lines.append(f'{TAB}main:')
@@ -141,7 +136,7 @@ class Converter:
                 self.nf_lines.append(f'{TAB}{TAB}{nfp[0]}(params.mets, {previous_nfp}.out, {nfp[2]})')
             previous_nfp = nfp[0]
         self.nf_lines.append(f'{BRACKETS[1]}')
-    
+
     def __write_to_nextflow_file(self, output_path):
         # self.__print_nextflow_tokens()
         # Write Nextflow line tokens to an output file
