@@ -34,7 +34,7 @@ class OCRD_Validator:
 
         return ocrd_commands
 
-    def validate_ocrd_file(self, filepath):
+    def extract_and_validate_ocrd_file(self, filepath):
         self._validate_ocrd_file_path(filepath)
         ocrd_lines = self._extract_ocrd_tokens(filepath)
         self._validate_ocrd_lines(ocrd_lines)

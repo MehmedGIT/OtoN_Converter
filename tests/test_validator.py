@@ -20,6 +20,6 @@ def test_workflow_without_docker():
     """E2E test for an OCR-D workflow using native ocrd_all
     """
     input_path = 'tests/assets/workflow.txt'
-    result = OCRD_Validator().validate_ocrd_file(input_path)
+    result = OCRD_Validator().extract_and_validate_ocrd_file(input_path)
 
     assert result == get_expected_output()
