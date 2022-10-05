@@ -1,5 +1,5 @@
 from .ocrd_validator import OCRD_Validator
-from .nextflow import Nextflow
+from .nextflow_script import Nextflow_Script
 
 class Converter:
     def __init__(self):
@@ -10,8 +10,8 @@ class Converter:
         ocrd_lines = ocrd_validator.extract_and_validate_ocrd_file(input_path)
         ocrd_commands = ocrd_validator.extract_ocrd_commands(ocrd_lines)
 
-        nextflow = Nextflow()
-        nextflow.build_default_beginning(dockerized)
-        nf_processes = nextflow.build_nextflow_processes(ocrd_commands, dockerized)
-        nextflow.build_main_workflow(nf_processes)
-        nextflow.produce_nextflow_file(output_path)
+        nextflow_script = Nextflow_Script()
+        nextflow_script.build_default_beginning(dockerized)
+        nf_processes = nextflow_script.build_nextflow_processes(ocrd_commands, dockerized)
+        nextflow_script.build_main_workflow(nf_processes)
+        nextflow_script.produce_nextflow_file(output_path)

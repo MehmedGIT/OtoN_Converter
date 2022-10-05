@@ -5,7 +5,6 @@ from .ocrd_processors_list import OCRD_PROCESSORS
 from .constants import (
     BACKSLASH,
     QM,
-    SPACE,
     VALID_CHARS
 )
 
@@ -62,7 +61,7 @@ class OCRD_Validator:
         with open(filepath, mode='r', encoding='utf-8') as ocrd_file:
             for line in ocrd_file:
                 curr_line_tokens = []
-                line = line.strip().split(SPACE)
+                line = line.strip().split(' ')
                 for token in line:
                     if len(token) == 0:
                         continue
