@@ -13,7 +13,7 @@ class OCRD_Validator:
     def __init__(self):
         pass
 
-    def extract_ocrd_commands(ocrd_lines):
+    def extract_ocrd_commands(self, ocrd_lines):
         ocrd_commands = []
         for line_index in range(1, len(ocrd_lines)):
             first_qm_index = 0
