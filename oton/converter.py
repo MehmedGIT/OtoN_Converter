@@ -11,7 +11,7 @@ class Converter:
         ocrd_commands = ocrd_validator.extract_ocrd_commands(ocrd_lines)
 
         nextflow_script = Nextflow_Script()
-        nextflow_script.build_default_beginning(dockerized)
+        nextflow_script.build_parameters(dockerized)
         nf_processes = nextflow_script.build_nextflow_processes(ocrd_commands, dockerized)
         nextflow_script.build_main_workflow(nf_processes)
         nextflow_script.produce_nextflow_file(output_path)

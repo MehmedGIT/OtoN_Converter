@@ -1,9 +1,9 @@
 nextflow.enable.dsl = 2
 
-params.workspace = "$projectDir/ocrd-workspace/"
-params.mets = "$projectDir/ocrd-workspace/mets.xml"
+params.workspace_path = "$projectDir/ocrd-workspace/"
+params.mets_path = "$projectDir/ocrd-workspace/mets.xml"
 params.docker_pwd = "/ocrd-workspace"
-params.docker_volume = "$params.workspace:$params.docker_pwd"
+params.docker_volume = "$params.workspace_path:$params.docker_pwd"
 params.docker_image = "ocrd/all:maximum"
 params.docker_command = "docker run --rm -u \$(id -u) -v $params.docker_volume -w $params.docker_pwd -- $params.docker_image"
 
@@ -145,14 +145,14 @@ process ocrd_calamari_recognize {
 
 workflow {
   main:
-    ocrd_cis_ocropy_binarize(params.mets, "OCR-D-IMG", "OCR-D-BIN")
-    ocrd_anybaseocr_crop(params.mets, ocrd_cis_ocropy_binarize.out, "OCR-D-CROP")
-    ocrd_skimage_binarize(params.mets, ocrd_anybaseocr_crop.out, "OCR-D-BIN2")
-    ocrd_skimage_denoise(params.mets, ocrd_skimage_binarize.out, "OCR-D-BIN-DENOISE")
-    ocrd_tesserocr_deskew(params.mets, ocrd_skimage_denoise.out, "OCR-D-BIN-DENOISE-DESKEW")
-    ocrd_cis_ocropy_segment(params.mets, ocrd_tesserocr_deskew.out, "OCR-D-SEG")
-    ocrd_cis_ocropy_dewarp(params.mets, ocrd_cis_ocropy_segment.out, "OCR-D-SEG-LINE-RESEG-DEWARP")
-    ocrd_calamari_recognize(params.mets, ocrd_cis_ocropy_dewarp.out, "OCR-D-OCR")
+    ocrd_cis_ocropy_binarize(params.mets_path, "OCR-D-IMG", "OCR-D-BIN")
+    ocrd_anybaseocr_crop(params.mets_path, ocrd_cis_ocropy_binarize.out, "OCR-D-CROP")
+    ocrd_skimage_binarize(params.mets_path, ocrd_anybaseocr_crop.out, "OCR-D-BIN2")
+    ocrd_skimage_denoise(params.mets_path, ocrd_skimage_binarize.out, "OCR-D-BIN-DENOISE")
+    ocrd_tesserocr_deskew(params.mets_path, ocrd_skimage_denoise.out, "OCR-D-BIN-DENOISE-DESKEW")
+    ocrd_cis_ocropy_segment(params.mets_path, ocrd_tesserocr_deskew.out, "OCR-D-SEG")
+    ocrd_cis_ocropy_dewarp(params.mets_path, ocrd_cis_ocropy_segment.out, "OCR-D-SEG-LINE-RESEG-DEWARP")
+    ocrd_calamari_recognize(params.mets_path, ocrd_cis_ocropy_dewarp.out, "OCR-D-OCR")
 }
 
 

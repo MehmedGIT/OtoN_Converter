@@ -8,6 +8,8 @@ from .constants import (
     VALID_CHARS
 )
 
+# TODO: More refactoring needed - still not satisfied with the readability.
+# Some methods could be simplified with better algorithms
 class OCRD_Validator:
     def __init__(self):
         pass

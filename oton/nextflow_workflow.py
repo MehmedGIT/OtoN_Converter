@@ -1,6 +1,7 @@
 from .constants import (
-    BRACKETS,
-    SPACE_AMOUNT
+    SPACES,
+
+    PARAMS_KEY_METS_PATH
 )
 
 class Nextflow_Workflow:
@@ -10,19 +11,17 @@ class Nextflow_Workflow:
         self.nf_processes = nf_processes
 
     def file_representation(self):
-        representation = f'workflow {BRACKETS[0]}\n'
-        representation += f'{SPACE_AMOUNT}{self.workflow_name}:\n'
+        representation = 'workflow {\n'
+        representation += f'{SPACES}{self.workflow_name}:\n'
 
         previous_nfp = None
-        # TODO: Further refactoring needed - params.mets should be dynamic
         for nfp in self.nf_processes:
             if previous_nfp is None:
-                representation += f'{SPACE_AMOUNT}{SPACE_AMOUNT}{nfp[0]}(params.mets, {nfp[1]}, {nfp[2]})\n'
+                representation += f'{SPACES}{SPACES}{nfp[0]}({PARAMS_KEY_METS_PATH}, {nfp[1]}, {nfp[2]})\n'
             else:
-                representation += f'{SPACE_AMOUNT}{SPACE_AMOUNT}{nfp[0]}(params.mets, {previous_nfp}.out, {nfp[2]})\n'
+                representation += f'{SPACES}{SPACES}{nfp[0]}({PARAMS_KEY_METS_PATH}, {previous_nfp}.out, {nfp[2]})\n'
             previous_nfp = nfp[0]
 
-        representation += f'{BRACKETS[1]}\n'
-        representation += '\n'
+        representation += '}\n\n'
 
         return representation

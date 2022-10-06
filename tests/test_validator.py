@@ -23,3 +23,4 @@ def test_workflow_without_docker():
     result = OCRD_Validator().extract_and_validate_ocrd_file(input_path)
 
     assert result == get_expected_output()
+

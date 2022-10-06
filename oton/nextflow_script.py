@@ -1,51 +1,38 @@
-import tomli
 from .nextflow_process import Nextflow_Process
 from .nextflow_workflow import Nextflow_Workflow
 from .constants import (
-    QM,
-    TOML_CONFIG,
-    DSL2,
+    DIR_IN,
+    DIR_OUT,
+    METS_FILE,
 
-    IN_DIR,
-    OUT_DIR,
-    METS_FILE
+    REPR_DSL2,
+    REPR_DOCKER_COMMAND,
+    REPR_DOCKER_IMAGE,
+    REPR_DOCKER_PWD,
+    REPR_DOCKER_VOLUME,
+    REPR_METS_PATH,
+    REPR_VENV_PATH,
+    REPR_WORKSPACE_PATH
 )
 
 class Nextflow_Script:
     def __init__(self):
         self.nf_lines = []
 
-    def build_default_beginning(self, dockerized=False):
-        self.nf_lines.append(DSL2)
+    def build_parameters(self, dockerized=False):
+        self.nf_lines.append(REPR_DSL2)
         self.nf_lines.append('')
 
-        # TODO: Further refactoring needed - this should happen inside the constants.py
-        with open(TOML_CONFIG, mode='rb') as toml_f:
-            config = tomli.load(toml_f)
-            workspace_path = config['workspace_path']
-            mets_path = config['mets_path']
-            params_workspace = f'params.workspace = {QM}{workspace_path}{QM}'
-            params_mets = f'params.mets = {QM}{mets_path}{QM}'
-            self.nf_lines.append(params_workspace)
-            self.nf_lines.append(params_mets)
+        self.nf_lines.append(REPR_WORKSPACE_PATH)
+        self.nf_lines.append(REPR_METS_PATH)
 
-            if dockerized:
-                docker_pwd = config['docker_pwd']
-                docker_volume = config['docker_volume']
-                docker_image = config['docker_image']
-                docker_command = config['docker_command']
-                params_docker_pwd = f'params.docker_pwd = {QM}{docker_pwd}{QM}'
-                params_docker_volume = f'params.docker_volume = {QM}{docker_volume}{QM}'
-                params_docker_image = f'params.docker_image = {QM}{docker_image}{QM}'
-                params_docker_command = f'params.docker_command = {QM}{docker_command}{QM}'
-                self.nf_lines.append(params_docker_pwd)
-                self.nf_lines.append(params_docker_volume)
-                self.nf_lines.append(params_docker_image)
-                self.nf_lines.append(params_docker_command)
-            else:
-                venv_path = config['venv_path']
-                params_venv = f'params.venv = {QM}{venv_path}{QM}'
-                self.nf_lines.append(params_venv)
+        if dockerized:
+            self.nf_lines.append(REPR_DOCKER_PWD)
+            self.nf_lines.append(REPR_DOCKER_VOLUME)
+            self.nf_lines.append(REPR_DOCKER_IMAGE)
+            self.nf_lines.append(REPR_DOCKER_COMMAND)
+        else:
+            self.nf_lines.append(REPR_VENV_PATH)
 
         self.nf_lines.append('')
 
@@ -56,12 +43,12 @@ class Nextflow_Script:
             nextflow_process = Nextflow_Process(ocrd_command, dockerized)
             nextflow_process.add_directive('maxForks 1')
             nextflow_process.add_input_param(f'path {METS_FILE}')
-            nextflow_process.add_input_param(f'val {IN_DIR}')
-            nextflow_process.add_input_param(f'val {OUT_DIR}')
-            nextflow_process.add_output_param(f'val {OUT_DIR}')
+            nextflow_process.add_input_param(f'val {DIR_IN}')
+            nextflow_process.add_input_param(f'val {DIR_OUT}')
+            nextflow_process.add_output_param(f'val {DIR_OUT}')
             self.nf_lines.append(nextflow_process.file_representation())
 
-            # This list is used inside the workflow section in Rule 3
+            # This list is used when building the workflow
             nf_processes.append(nextflow_process.repr_in_workflow)
 
         return nf_processes
