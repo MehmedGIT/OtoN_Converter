@@ -37,7 +37,21 @@ Converter from basic OCR-D process workflow to Nextflow workflow script
         oton convert -I workflow1.txt -O nextflow1_dockerized.nf -D
         ```
 
-## 4. Steps
+## 4. Configuration
+
+The configuration of the converter available at `oton/config.toml` provides the following parameters:
+
+- `workspace_path`: the workspace in which a workflow is executed. *Note:* `$projectDir` is a NextFlow variable that is equivalent to `.`
+- `mets_path`: the location of the workspace's mets.xml. *Note:* `$projectDir` is a NextFlow variable that is equivalent to `.`
+- `docker_pwd`: the working directory of the Docker container
+- `docker_image`: the `ocrd_all` Docker image to be used
+- `docker_models_dir`: the directory to which the models are mounted in the Docker container
+- `venv_path`: the path for activating your ocrd_all venv
+- `models_path`: the path to the models on your system
+
+Adjust these parameters according to your needs and reinstall the package (if necessary).
+
+## 5. Steps
 
 1. Validate the OCR-D workflow txt you want to convert (you can also skip this step since validation is also done on step 2 automatically)
 
@@ -49,7 +63,7 @@ Converter from basic OCR-D process workflow to Nextflow workflow script
 
 Currently, there are no known issues or bugs. Please report in case you find an issue.
 
-## 5. Planned extensions
+## 6. Planned extensions
 
 5.1. Support options to ocrd processes (i.e., the first line of the OCR-D process workflow txt) (Check [here](https://github.com/MehmedGIT/OtoN_Converter/issues/3))
 
