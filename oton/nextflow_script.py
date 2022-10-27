@@ -8,9 +8,12 @@ from .constants import (
     REPR_DSL2,
     REPR_DOCKER_COMMAND,
     REPR_DOCKER_IMAGE,
+    REPR_DOCKER_MODELS,
+    REPR_DOCKER_MODELS_DIR,
     REPR_DOCKER_PWD,
     REPR_DOCKER_VOLUME,
     REPR_METS_PATH,
+    REPR_MODELS_PATH,
     REPR_VENV_PATH,
     REPR_WORKSPACE_PATH
 )
@@ -29,6 +32,9 @@ class Nextflow_Script:
         if dockerized:
             self.nf_lines.append(REPR_DOCKER_PWD)
             self.nf_lines.append(REPR_DOCKER_VOLUME)
+            self.nf_lines.append(REPR_DOCKER_MODELS_DIR)
+            self.nf_lines.append(REPR_MODELS_PATH)
+            self.nf_lines.append(REPR_DOCKER_MODELS)
             self.nf_lines.append(REPR_DOCKER_IMAGE)
             self.nf_lines.append(REPR_DOCKER_COMMAND)
         else:
