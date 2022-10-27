@@ -8,5 +8,5 @@ docker_models_dir = "/usr/local/share/ocrd-resources"
 
 # See https://www.nextflow.io/docs/latest/process.html#script for the difference
 # between NextFlow and Bash variables.
-venv_path = "\\$HOME/git/ocrd_all/venv/bin/activate"
-models_path = "$projectDir/models"
+venv_path = "\\$HOME/venv37-ocrd/bin/activate"
+models_path = "\\$HOME/ocrd_models"
