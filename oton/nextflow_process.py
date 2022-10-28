@@ -8,9 +8,9 @@ from .constants import (
 )
 
 class Nextflow_Process:
-    def __init__(self, ocrd_command, dockerized=False):
+    def __init__(self, ocrd_command, index_pos, dockerized=False):
         self.dockerized = dockerized
-        self.process_name = self._extract_process_name(ocrd_command[0])
+        self.process_name = self._extract_process_name(ocrd_command[0]) + "_" + str(index_pos)
         in_index, out_index = self._find_io_files_value_indices(ocrd_command)
         self.ocrd_cmd_input, self.ocrd_cmd_output = self._find_io_files_values(ocrd_command, in_index, out_index)
         self.repr_in_workflow = [self.process_name, self.ocrd_cmd_input, self.ocrd_cmd_output]
