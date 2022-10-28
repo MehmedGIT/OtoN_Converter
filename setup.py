@@ -5,7 +5,7 @@ install_requires = open('requirements.txt').read().split('\n')
 
 setup(
     name='oton_converter',
-    version='1.0.0',
+    version='1.1.0',
     description='A CLI tool for converting OCR-D workflows to Nextflow workflow scripts',
     long_description=open('README.md').read(),
     long_description_content_type='text/markdown',

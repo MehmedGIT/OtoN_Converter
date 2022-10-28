@@ -10,7 +10,7 @@ params.docker_models = "$params.models_path:$params.docker_models_dir"
 params.docker_image = "ocrd/all:maximum"
 params.docker_command = "docker run --rm -u \$(id -u) -v $params.docker_volume -v $params.docker_models -w $params.docker_pwd -- $params.docker_image"
 
-process ocrd_cis_ocropy_binarize {
+process ocrd_cis_ocropy_binarize_0 {
   maxForks 1
 
   input:
@@ -27,7 +27,7 @@ process ocrd_cis_ocropy_binarize {
     """
 }
 
-process ocrd_anybaseocr_crop {
+process ocrd_anybaseocr_crop_1 {
   maxForks 1
 
   input:
@@ -44,7 +44,7 @@ process ocrd_anybaseocr_crop {
     """
 }
 
-process ocrd_skimage_binarize {
+process ocrd_skimage_binarize_2 {
   maxForks 1
 
   input:
@@ -61,7 +61,7 @@ process ocrd_skimage_binarize {
     """
 }
 
-process ocrd_skimage_denoise {
+process ocrd_skimage_denoise_3 {
   maxForks 1
 
   input:
@@ -78,7 +78,7 @@ process ocrd_skimage_denoise {
     """
 }
 
-process ocrd_tesserocr_deskew {
+process ocrd_tesserocr_deskew_4 {
   maxForks 1
 
   input:
@@ -95,7 +95,7 @@ process ocrd_tesserocr_deskew {
     """
 }
 
-process ocrd_cis_ocropy_segment {
+process ocrd_cis_ocropy_segment_5 {
   maxForks 1
 
   input:
@@ -112,7 +112,7 @@ process ocrd_cis_ocropy_segment {
     """
 }
 
-process ocrd_cis_ocropy_dewarp {
+process ocrd_cis_ocropy_dewarp_6 {
   maxForks 1
 
   input:
@@ -129,7 +129,7 @@ process ocrd_cis_ocropy_dewarp {
     """
 }
 
-process ocrd_calamari_recognize {
+process ocrd_calamari_recognize_7 {
   maxForks 1
 
   input:
@@ -148,14 +148,14 @@ process ocrd_calamari_recognize {
 
 workflow {
   main:
-    ocrd_cis_ocropy_binarize(params.mets_path, "OCR-D-IMG", "OCR-D-BIN")
-    ocrd_anybaseocr_crop(ocrd_cis_ocropy_binarize.out, "OCR-D-BIN", "OCR-D-CROP")
-    ocrd_skimage_binarize(ocrd_anybaseocr_crop.out, "OCR-D-CROP", "OCR-D-BIN2")
-    ocrd_skimage_denoise(ocrd_skimage_binarize.out, "OCR-D-BIN2", "OCR-D-BIN-DENOISE")
-    ocrd_tesserocr_deskew(ocrd_skimage_denoise.out, "OCR-D-BIN-DENOISE", "OCR-D-BIN-DENOISE-DESKEW")
-    ocrd_cis_ocropy_segment(ocrd_tesserocr_deskew.out, "OCR-D-BIN-DENOISE-DESKEW", "OCR-D-SEG")
-    ocrd_cis_ocropy_dewarp(ocrd_cis_ocropy_segment.out, "OCR-D-SEG", "OCR-D-SEG-LINE-RESEG-DEWARP")
-    ocrd_calamari_recognize(ocrd_cis_ocropy_dewarp.out, "OCR-D-SEG-LINE-RESEG-DEWARP", "OCR-D-OCR")
+    ocrd_cis_ocropy_binarize_0(params.mets_path, "OCR-D-IMG", "OCR-D-BIN")
+    ocrd_anybaseocr_crop_1(ocrd_cis_ocropy_binarize_0.out, "OCR-D-BIN", "OCR-D-CROP")
+    ocrd_skimage_binarize_2(ocrd_anybaseocr_crop_1.out, "OCR-D-CROP", "OCR-D-BIN2")
+    ocrd_skimage_denoise_3(ocrd_skimage_binarize_2.out, "OCR-D-BIN2", "OCR-D-BIN-DENOISE")
+    ocrd_tesserocr_deskew_4(ocrd_skimage_denoise_3.out, "OCR-D-BIN-DENOISE", "OCR-D-BIN-DENOISE-DESKEW")
+    ocrd_cis_ocropy_segment_5(ocrd_tesserocr_deskew_4.out, "OCR-D-BIN-DENOISE-DESKEW", "OCR-D-SEG")
+    ocrd_cis_ocropy_dewarp_6(ocrd_cis_ocropy_segment_5.out, "OCR-D-SEG", "OCR-D-SEG-LINE-RESEG-DEWARP")
+    ocrd_calamari_recognize_7(ocrd_cis_ocropy_dewarp_6.out, "OCR-D-SEG-LINE-RESEG-DEWARP", "OCR-D-OCR")
 }
 
 
