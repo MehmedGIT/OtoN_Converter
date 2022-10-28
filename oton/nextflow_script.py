@@ -51,7 +51,7 @@ class Nextflow_Script:
             nextflow_process.add_input_param(f'path {METS_FILE}')
             nextflow_process.add_input_param(f'val {DIR_IN}')
             nextflow_process.add_input_param(f'val {DIR_OUT}')
-            nextflow_process.add_output_param(f'val {DIR_OUT}')
+            nextflow_process.add_output_param(f'path {METS_FILE}')
             self.nf_lines.append(nextflow_process.file_representation())
 
             # This list is used when building the workflow

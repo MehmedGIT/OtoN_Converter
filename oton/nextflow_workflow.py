@@ -19,7 +19,7 @@ class Nextflow_Workflow:
             if previous_nfp is None:
                 representation += f'{SPACES}{SPACES}{nfp[0]}({PARAMS_KEY_METS_PATH}, {nfp[1]}, {nfp[2]})\n'
             else:
-                representation += f'{SPACES}{SPACES}{nfp[0]}({PARAMS_KEY_METS_PATH}, {previous_nfp}.out, {nfp[2]})\n'
+                representation += f'{SPACES}{SPACES}{nfp[0]}({previous_nfp}.out, {nfp[1]}, {nfp[2]})\n'
             previous_nfp = nfp[0]
 
         representation += '}\n\n'

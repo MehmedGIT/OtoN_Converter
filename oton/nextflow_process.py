@@ -12,8 +12,8 @@ class Nextflow_Process:
         self.dockerized = dockerized
         self.process_name = self._extract_process_name(ocrd_command[0])
         in_index, out_index = self._find_io_files_value_indices(ocrd_command)
-        ocrd_cmd_input, ocrd_cmd_output = self._find_io_files_values(ocrd_command, in_index, out_index)
-        self.repr_in_workflow = [self.process_name, ocrd_cmd_input, ocrd_cmd_output]
+        self.ocrd_cmd_input, self.ocrd_cmd_output = self._find_io_files_values(ocrd_command, in_index, out_index)
+        self.repr_in_workflow = [self.process_name, self.ocrd_cmd_input, self.ocrd_cmd_output]
         ocrd_command = self._replace_io_files_with_placeholders(ocrd_command, in_index, out_index)
         self.ocrd_command_bash = ' '.join(ocrd_command)
         self.directives = []

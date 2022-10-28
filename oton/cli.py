@@ -30,6 +30,6 @@ def convert(input_path, output_path, dockerized):
               show_default=True,
               help='Path to the OCR-D workflow file to be validated.')
 def validate(input_path):
-    OCRD_Validator().validate_ocrd_file(input_path)
+    OCRD_Validator().extract_and_validate_ocrd_file(input_path)
     print(f"Validating: {input_path}")
     print("Validation was successful!")

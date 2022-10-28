@@ -4,6 +4,7 @@ from os.path import exists, isfile
 from .ocrd_processors_list import OCRD_PROCESSORS
 from .constants import (
     BACKSLASH,
+    COMMA,
     QM,
     VALID_CHARS
 )
@@ -12,7 +13,9 @@ from .constants import (
 # Some methods could be simplified with better algorithms
 class OCRD_Validator:
     def __init__(self):
-        pass
+        # TODO: This is a temporal fast fix for the __validate_toke_symbols() method.
+        # TODO: Some refactoring of the source code should follow.
+        self._previously_seen_output_folder_names = []
 
     def extract_ocrd_commands(self, ocrd_lines):
         ocrd_commands = []
@@ -40,7 +43,8 @@ class OCRD_Validator:
         ocrd_lines = self._extract_ocrd_tokens(filepath)
         self._validate_ocrd_lines(ocrd_lines)
         self._validate_ocrd_token_symbols(ocrd_lines)
-        self._validate_ocrd_io_order(ocrd_lines)
+        # TODO: Deactivated - must be refactored
+        # self._validate_ocrd_io_order(ocrd_lines)
 
         return ocrd_lines
 
@@ -52,10 +56,11 @@ class OCRD_Validator:
             print(f"OCR-D file: {filepath} is not a readable file!")
             sys.exit(2)
 
-    # Rule 1: Each QM and BACKSLASH is a separate token
-    # Rule 2: Each ocrd-process is a separate token
-    # Rule 3: Each -I, -O, and -P is a separate token
     def _extract_ocrd_tokens(self, filepath):
+        # Rule 1: Each QM and BACKSLASH is a separate token
+        # Rule 2: Each ocrd-processor name is a separate token
+        # Rule 3: Each -I, -O, and -P is a separate token
+
         ocrd_lines = []
 
         # Extract tokens from the ocrd_file
@@ -83,10 +88,14 @@ class OCRD_Validator:
 
         return ocrd_lines
 
-    # Rule 1: The input parameter of the second line is the entry-point
-    # Rule 2: The input parameter of lines after the second line 
-    # are the output parameters of the previous line 
+    # TODO: This is temporarily deactivated and the user must responsibility for the correct 
+    # input/output folder sequences. There are cases in which the -I parameter may take 2/3 folders.
+    # This should be implemented properly when refactoring the code
+    """
     def _validate_ocrd_io_order(self, ocrd_lines):
+        # Rule 1: The input parameter of the second line is the entry-point
+        # Rule 2: The input parameter of lines after the second line 
+        # are the output parameters of the previous line 
         prev_output = None
         curr_input = None
         curr_output = None
@@ -102,12 +111,14 @@ class OCRD_Validator:
                     hint = f"{prev_output} on line {line_index} does not match with {curr_input} on line {line_index+1}"
                     self.__print_syntax_error(line_num=line_index+1, info=info, hint=hint)
 
-            prev_output = curr_output
+            prev_output = 
+    """
 
-    # Rule 1: A single char token must be either: QM or BACKSLASH
-    # Rule 2: A double char token must be either: -I, -O, or -P
-    # Rule 3: Other tokens must contain only VALID_CHARS
     def _validate_ocrd_token_symbols(self, ocrd_lines):
+        # Rule 1: A single char token must be either: QM or BACKSLASH
+        # Rule 2: A double char token must be either: -I, -O, or -P
+        # Rule 3: Other tokens must contain only VALID_CHARS
+
         # Check for invalid symbols/tokens
         for line_index in range (0, len(ocrd_lines)):
             for token_index in range(0, len(ocrd_lines[line_index])):
@@ -143,28 +154,42 @@ class OCRD_Validator:
     def __validate_token_symbols(self, line_index, token):
         for char in token:
             if char not in VALID_CHARS:
+                # check if the comma char is a separation for input/output folders
+                if char == COMMA:
+                    folder_tokens = token.split(COMMA)
+                    if(self.__are_previously_seen_output_or_GT_folders(folder_tokens)):
+                        continue
+
                 info = f"TOKEN_SYMBOL_ERROR_RULE_03: Invalid token: {token}"
                 hint = f"Tokens cannot contain character: {char}"
                 self.__print_syntax_error(line_num=line_index, info=info, hint=hint)
                 sys.exit(2)
 
-    # Rule 1: The first line starts with 'ocrd process \'
-    # Rule 2: Validate the minimum amount of tokens needed
-    # Rule 3: Validate the start of an OCR-D command
-    # Rule 4: Validate the OCR-D processor call in the OCR-D command
-    # Rule 5: After a '-I' token on each line only one argument must follow
-    # Rule 6: After a '-O' token on each line only one argument must follow
-    # Rule 7: After a '-P' token on each line only two arguments must follow
-    # Rule 8: Only one '-I' and one '-O' token are allowed on each line
-    # Rule 9: Multiple '-P' tokens are allowed on each line
-    # Rule 10. The order of '-I', '-O', and '-P' does not matter
-    # Warning: -P are not checked if they are supported or not by the specific OCR-D processors
-    # Rule 11: Validate the end of an OCR-D command
-    # Rule 12: Each line except the last one ends with a backslash (BACKSLASH)
+    def __are_previously_seen_output_or_GT_folders(self, folder_tokens):
+        for folder_token in folder_tokens:
+            if folder_token not in self._previously_seen_output_folder_names:
+                if "GT" not in folder_token:
+                    return False
+
+        return True
+
     def _validate_ocrd_lines(self, ocrd_lines):
+        # Rule 1: The first line starts with 'ocrd process \'
+        # Rule 2: Validate the minimum amount of tokens needed
+        # Rule 3: Validate the start of an OCR-D command
+        # Rule 4: Validate the OCR-D processor call in the OCR-D command
+        # Rule 5: After a '-I' token on each line only one argument must follow
+        # Rule 6: After a '-O' token on each line only one argument must follow
+        # Rule 7: After a '-P' token on each line only two arguments must follow
+        # Rule 8: Only one '-I' and one '-O' token are allowed on each line
+        # Rule 9: Multiple '-P' tokens are allowed on each line
+        # Rule 10. The order of '-I', '-O', and '-P' does not matter
+        # Warning: -P are not checked if they are supported or not by the specific OCR-D processors
+        # Rule 11: Validate the end of an OCR-D command
+        # Rule 12: Each line except the last one ends with a backslash (BACKSLASH)
         self.__validate_first_line(ocrd_lines[0])
 
-        for line_index in range(1, len(ocrd_lines)-2):
+        for line_index in range(1, len(ocrd_lines)-1):
             self.__validate_middle_line(line_index, ocrd_lines[line_index])
 
         self.__validate_last_line(len(ocrd_lines)-1, ocrd_lines[-1])
@@ -265,6 +290,7 @@ class OCRD_Validator:
                 next_token = line[token_index+1]
                 self.__validate_output_token(line_num, token='-O', next_token=next_token)
                 processed_tokens.append(next_token)
+                self._previously_seen_output_folder_names.append(next_token)
                 output_found = True
             elif current_token == '-P':
                 next_token = line[token_index+1]
@@ -273,8 +299,8 @@ class OCRD_Validator:
                 processed_tokens.append(next_token)
                 processed_tokens.append(next_token2)
             else:
-                info = "UNEXPECTED_TOKEN_ERROR: Unknown token found: {current_token}"
-                index = "{token_index}"
+                info = f"UNEXPECTED_TOKEN_ERROR: Unknown token found: {current_token}"
+                index = f"{token_index}"
                 self.__print_syntax_error(line_num, info=info, index=index)
 
     def __validate_input_token(self, line_num, token, next_token):

@@ -4,6 +4,7 @@ import tomli
 
 __all__ = [
     "BACKSLASH",
+    "COMMA",
     "QM",
     "SPACES",
     "VALID_CHARS",
@@ -53,6 +54,7 @@ VALID_CHARS: str = f'-_.{ascii_letters}{digits}'
 
 # Symbols
 BACKSLASH = '\\'
+COMMA = ','
 QM = '"' # Quotation Mark
 SPACES = '  '
 
