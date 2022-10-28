@@ -13,7 +13,7 @@ process ocrd_cis_ocropy_binarize {
     val output_dir
 
   output:
-    val output_dir
+    path mets_file
 
   script:
     """
@@ -32,7 +32,7 @@ process ocrd_anybaseocr_crop {
     val output_dir
 
   output:
-    val output_dir
+    path mets_file
 
   script:
     """
@@ -51,7 +51,7 @@ process ocrd_skimage_denoise {
     val output_dir
 
   output:
-    val output_dir
+    path mets_file
 
   script:
     """
@@ -70,7 +70,7 @@ process ocrd_tesserocr_deskew {
     val output_dir
 
   output:
-    val output_dir
+    path mets_file
 
   script:
     """
@@ -89,7 +89,7 @@ process ocrd_tesserocr_segment {
     val output_dir
 
   output:
-    val output_dir
+    path mets_file
 
   script:
     """
@@ -108,7 +108,7 @@ process ocrd_cis_ocropy_dewarp {
     val output_dir
 
   output:
-    val output_dir
+    path mets_file
 
   script:
     """
@@ -127,7 +127,7 @@ process ocrd_tesserocr_recognize {
     val output_dir
 
   output:
-    val output_dir
+    path mets_file
 
   script:
     """
@@ -140,12 +140,12 @@ process ocrd_tesserocr_recognize {
 workflow {
   main:
     ocrd_cis_ocropy_binarize(params.mets_path, "OCR-D-IMG", "OCR-D-BIN")
-    ocrd_anybaseocr_crop(params.mets_path, ocrd_cis_ocropy_binarize.out, "OCR-D-CROP")
-    ocrd_skimage_denoise(params.mets_path, ocrd_anybaseocr_crop.out, "OCR-D-BIN-DENOISE")
-    ocrd_tesserocr_deskew(params.mets_path, ocrd_skimage_denoise.out, "OCR-D-BIN-DENOISE-DESKEW")
-    ocrd_tesserocr_segment(params.mets_path, ocrd_tesserocr_deskew.out, "OCR-D-SEG")
-    ocrd_cis_ocropy_dewarp(params.mets_path, ocrd_tesserocr_segment.out, "OCR-D-SEG-DEWARP")
-    ocrd_tesserocr_recognize(params.mets_path, ocrd_cis_ocropy_dewarp.out, "OCR-D-OCR")
+    ocrd_anybaseocr_crop(ocrd_cis_ocropy_binarize.out, "OCR-D-BIN", "OCR-D-CROP")
+    ocrd_skimage_denoise(ocrd_anybaseocr_crop.out, "OCR-D-CROP", "OCR-D-BIN-DENOISE")
+    ocrd_tesserocr_deskew(ocrd_skimage_denoise.out, "OCR-D-BIN-DENOISE", "OCR-D-BIN-DENOISE-DESKEW")
+    ocrd_tesserocr_segment(ocrd_tesserocr_deskew.out, "OCR-D-BIN-DENOISE-DESKEW", "OCR-D-SEG")
+    ocrd_cis_ocropy_dewarp(ocrd_tesserocr_segment.out, "OCR-D-SEG", "OCR-D-SEG-DEWARP")
+    ocrd_tesserocr_recognize(ocrd_cis_ocropy_dewarp.out, "OCR-D-SEG-DEWARP", "OCR-D-OCR")
 }
 
 
