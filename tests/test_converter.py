@@ -21,14 +21,14 @@ def test_conversion_wo_docker():
 
     expected_workflow = """workflow {
             main:
-                ocrd_cis_ocropy_binarize(params.mets_path, "OCR-D-IMG", "OCR-D-BIN")
-                ocrd_anybaseocr_crop(params.mets_path, ocrd_cis_ocropy_binarize.out, "OCR-D-CROP")
-                ocrd_skimage_binarize(params.mets_path, ocrd_anybaseocr_crop.out, "OCR-D-BIN2")
-                ocrd_skimage_denoise(params.mets_path, ocrd_skimage_binarize.out, "OCR-D-BIN-DENOISE")
-                ocrd_tesserocr_deskew(params.mets_path, ocrd_skimage_denoise.out, "OCR-D-BIN-DENOISE-DESKEW")
-                ocrd_cis_ocropy_segment(params.mets_path, ocrd_tesserocr_deskew.out, "OCR-D-SEG")
-                ocrd_cis_ocropy_dewarp(params.mets_path, ocrd_cis_ocropy_segment.out, "OCR-D-SEG-LINE-RESEG-DEWARP")
-                ocrd_calamari_recognize(params.mets_path, ocrd_cis_ocropy_dewarp.out, "OCR-D-OCR")
+                ocrd_cis_ocropy_binarize_0(params.mets_path, "OCR-D-IMG", "OCR-D-BIN")
+                ocrd_anybaseocr_crop_1(params.mets_path, ocrd_cis_ocropy_binarize_0.out, "OCR-D-CROP")
+                ocrd_skimage_binarize_2(params.mets_path, ocrd_anybaseocr_crop_1.out, "OCR-D-BIN2")
+                ocrd_skimage_denoise_3(params.mets_path, ocrd_skimage_binarize_2.out, "OCR-D-BIN-DENOISE")
+                ocrd_tesserocr_deskew_4(params.mets_path, ocrd_skimage_denoise_3.out, "OCR-D-BIN-DENOISE-DESKEW")
+                ocrd_cis_ocropy_segment_5(params.mets_path, ocrd_tesserocr_deskew_4.out, "OCR-D-SEG")
+                ocrd_cis_ocropy_dewarp_6(params.mets_path, ocrd_cis_ocropy_segment_5.out, "OCR-D-SEG-LINE-RESEG-DEWARP")
+                ocrd_calamari_recognize_7(params.mets_path, ocrd_cis_ocropy_dewarp_6.out, "OCR-D-OCR")
         }"""
     expected_normalized = sub(r'\s+','',expected_workflow)
 
