@@ -45,9 +45,9 @@ class Nextflow_Script:
     def build_nextflow_processes(self, ocrd_commands, dockerized=False):
         nf_processes = []
 
+        index = 0
         for ocrd_command in ocrd_commands:
-            index_pos = ocrd_commands.index(ocrd_command)
-            nextflow_process = Nextflow_Process(ocrd_command, index_pos, dockerized)
+            nextflow_process = Nextflow_Process(ocrd_command, index, dockerized)
             nextflow_process.add_directive('maxForks 1')
             nextflow_process.add_input_param(f'path {METS_FILE}')
             nextflow_process.add_input_param(f'val {DIR_IN}')
@@ -57,6 +57,7 @@ class Nextflow_Script:
 
             # This list is used when building the workflow
             nf_processes.append(nextflow_process.repr_in_workflow)
+            index += 1
 
         return nf_processes
 
