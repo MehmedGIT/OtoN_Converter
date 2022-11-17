@@ -15,7 +15,7 @@ class OCRD_Validator:
     def __init__(self):
         # TODO: This is a temporal fast fix for the __validate_toke_symbols() method.
         # TODO: Some refactoring of the source code should follow.
-        self._previously_seen_output_folder_names = []
+        self._previously_seen = []
 
     def extract_ocrd_commands(self, ocrd_lines):
         ocrd_commands = []
@@ -88,7 +88,7 @@ class OCRD_Validator:
 
         return ocrd_lines
 
-    # TODO: This is temporarily deactivated and the user must responsibility for the correct 
+    # TODO: This is temporarily deactivated and the user must be responsible for the correct 
     # input/output folder sequences. There are cases in which the -I parameter may take 2/3 folders.
     # This should be implemented properly when refactoring the code
     """
@@ -151,26 +151,25 @@ class OCRD_Validator:
         else:
             self.__validate_token_symbols(line_index, token)
 
+    # TODO: This is too complex, refactor it! Pain for others to read and understand...
     def __validate_token_symbols(self, line_index, token):
         for char in token:
             if char not in VALID_CHARS:
                 # check if the comma char is a separation for input/output folders
                 if char == COMMA:
                     folder_tokens = token.split(COMMA)
-                    if(self.__are_previously_seen_output_or_GT_folders(folder_tokens)):
-                        continue
-
-                info = f"TOKEN_SYMBOL_ERROR_RULE_03: Invalid token: {token}"
-                hint = f"Tokens cannot contain character: {char}"
-                self.__print_syntax_error(line_num=line_index, info=info, hint=hint)
-                sys.exit(2)
-
-    def __are_previously_seen_output_or_GT_folders(self, folder_tokens):
-        for folder_token in folder_tokens:
-            if folder_token not in self._previously_seen_output_folder_names:
-                if "GT" not in folder_token:
-                    return False
-
+                    for folder_token in folder_tokens:
+                        if not self.__validate_token_symbols(line_index, folder_token):
+                            info = f"TOKEN_SYMBOL_ERROR_RULE_03: Invalid token: {token}"
+                            hint = f"Tokens cannot contain character: {char}"
+                            self.__print_syntax_error(line_num=line_index, info=info, hint=hint)
+                            sys.exit(2)
+                else:
+                    info = f"TOKEN_SYMBOL_ERROR_RULE_03: Invalid token: {token}"
+                    hint = f"Tokens cannot contain character: {char}"
+                    self.__print_syntax_error(line_num=line_index, info=info, hint=hint)
+                    sys.exit(2)
+         
         return True
 
     def _validate_ocrd_lines(self, ocrd_lines):
@@ -290,7 +289,7 @@ class OCRD_Validator:
                 next_token = line[token_index+1]
                 self.__validate_output_token(line_num, token='-O', next_token=next_token)
                 processed_tokens.append(next_token)
-                self._previously_seen_output_folder_names.append(next_token)
+                self._previously_seen.append(next_token)
                 output_found = True
             elif current_token == '-P':
                 next_token = line[token_index+1]
