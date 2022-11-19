@@ -59,7 +59,7 @@ Adjust these parameters according to your needs and reinstall the package (if ne
 
 3. Create a test OCR-D workspace: `./prepare_workspace.sh`
 
-4. Execute the Nextflow workflow script: `nextflow run nextflow1.nf`
+4. Execute the Nextflow workflow script: `nextflow run ./oton/assets/nextflow1.nf`
 
 Currently, there are no known issues or bugs. Please report in case you find an issue.
 
