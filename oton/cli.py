@@ -1,3 +1,4 @@
+from pkg_resources import resource_filename
 import click
 from .converter import Converter
 from .ocrd_validator import OCRD_Validator
@@ -6,12 +7,18 @@ from .ocrd_validator import OCRD_Validator
 def cli():
     pass
 
+# ./oton/assets/workflow1.txt
+default_input = resource_filename(__name__, 'assets/workflow1.txt')
+default_output = resource_filename(__name__, 'assets/nextflow1.txt')
+
 @cli.command("convert", help="Convert an OCR-D workflow to a Nextflow workflow script.")
 @click.option('-I', '--input_path',
-              default='./workflow1.txt',
+              default=default_input,
+              show_default=True,
               help='Path to the OCR-D workflow file to be converted.')
 @click.option('-O', '--output_path',
-              default='./nextflow1.nf',
+              default=default_output,
+              show_default=True,
               help='Path of the Nextflow workflow script to be generated.')
 @click.option('-D', '--dockerized',
               is_flag=True,
@@ -26,7 +33,7 @@ def convert(input_path, output_path, dockerized):
 
 @cli.command("validate", help="Validate an OCR-D workflow txt file.")
 @click.option('-I', '--input_path',
-              default='./workflow1.txt',
+              default=default_input,
               show_default=True,
               help='Path to the OCR-D workflow file to be validated.')
 def validate(input_path):
