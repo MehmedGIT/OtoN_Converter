@@ -20,7 +20,7 @@ Converter from basic OCR-D process workflow to Nextflow workflow script
 1. Validation of an OCR-D process workflow txt:
 
     ```bash
-    oton validate -I workflow1.txt
+    oton validate -I ./oton/assets/workflow1.txt
     ```
 
 2. Conversion of an OCR-D process workflow txt to Nextflow workflow script:
@@ -28,13 +28,13 @@ Converter from basic OCR-D process workflow to Nextflow workflow script
     1. Normal conversion - if you have the OCR-D software installed locally
 
         ```bash
-        oton convert -I workflow1.txt -O nextflow1.nf
+        oton convert -I ./oton/assets/workflow1.txt -O ./oton/assets/nextflow1.nf
         ```
 
     2. Dockerized conversion - if you have the OCR-D software docker image (preferably ocrd/all:maximum)
 
         ```bash
-        oton convert -I workflow1.txt -O nextflow1_dockerized.nf -D
+        oton convert -I ./oton/assets/workflow1.txt -O ./oton/assets/nextflow1_dockerized.nf -D
         ```
 
 ## 4. Configuration
