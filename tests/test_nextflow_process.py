@@ -1,5 +1,9 @@
 from oton.nextflow_process import Nextflow_Process
 from oton.ocrd_validator import OCRD_Validator
+from oton.utils import (
+    validate_file_path,
+    extract_file_lines,
+)
 
 def test_line_append():
     """Tests if each NextFlow function appends a number to the processor name
@@ -7,7 +11,11 @@ def test_line_append():
     """
     input_path = 'tests/assets/workflow_with_duplicate_processors.txt'
     ocrd_validator = OCRD_Validator()
-    ocrd_lines = ocrd_validator.extract_and_validate_ocrd_file(input_path)
+    validate_file_path(input_path)
+    file_lines = extract_file_lines(input_path)
+    ocrd_lines = ocrd_validator.extract_ocrd_tokens(file_lines)
+    ocrd_validator.validate_ocrd_token_symbols(ocrd_lines)
+    ocrd_validator.validate_ocrd_lines(ocrd_lines)
     ocrd_commands = ocrd_validator.extract_ocrd_commands(ocrd_lines)
 
     result = []

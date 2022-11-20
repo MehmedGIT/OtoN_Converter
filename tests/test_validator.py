@@ -1,4 +1,8 @@
 from oton.ocrd_validator import OCRD_Validator
+from oton.utils import (
+    validate_file_path,
+    extract_file_lines,
+)
 
 def get_expected_output():
     """Returns the expected validation outputs for tests/assets/workflow.txt and
@@ -20,7 +24,11 @@ def test_workflow_without_docker():
     """E2E test for an OCR-D workflow using native ocrd_all
     """
     input_path = 'tests/assets/workflow.txt'
-    result = OCRD_Validator().extract_and_validate_ocrd_file(input_path)
+    ocrd_validator = OCRD_Validator()
+    file_lines = extract_file_lines(input_path)
+    ocrd_lines = ocrd_validator.extract_ocrd_tokens(file_lines)
+    ocrd_validator.validate_ocrd_token_symbols(ocrd_lines)
+    ocrd_validator.validate_ocrd_lines(ocrd_lines)
 
-    assert result == get_expected_output()
+    assert ocrd_lines == get_expected_output()
 
