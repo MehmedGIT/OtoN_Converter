@@ -1,5 +1,9 @@
 from .ocrd_validator import OCRD_Validator
 from .nextflow_script import Nextflow_Script
+from .utils import (
+    validate_file_path,
+    extract_file_lines,
+)
 
 class Converter:
     def __init__(self):
@@ -7,7 +11,11 @@ class Converter:
 
     def convert_OtoN(self, input_path, output_path, dockerized=False):
         ocrd_validator = OCRD_Validator()
-        ocrd_lines = ocrd_validator.extract_and_validate_ocrd_file(input_path)
+        validate_file_path(input_path)
+        file_lines = extract_file_lines(input_path)
+        ocrd_lines = ocrd_validator.extract_ocrd_tokens(file_lines)
+        ocrd_validator.validate_ocrd_token_symbols(ocrd_lines)
+        ocrd_validator.validate_ocrd_lines(ocrd_lines)
         ocrd_commands = ocrd_validator.extract_ocrd_commands(ocrd_lines)
 
         nextflow_script = Nextflow_Script()
