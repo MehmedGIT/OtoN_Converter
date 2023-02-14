@@ -7,6 +7,7 @@ from .utils import (
     validate_line_token_symbols,
 )
 
+
 # TODO: More refactoring needed - still not satisfied with the readability.
 # Some methods could be simplified with better algorithms
 class OCRD_Validator:
@@ -21,14 +22,16 @@ class OCRD_Validator:
                 ocrd_tokens.append(curr_line_tokens)
 
         return ocrd_tokens
+
     def validate_ocrd_token_symbols(self, ocrd_lines):
         # Rule 1: A single char token must be either: QM or BACKSLASH
         # Rule 2: A double char token must be either: -I, -O, or -P
         # Rule 3: Other tokens must contain only VALID_CHARS
 
         # Check for invalid symbols/tokens
-        for line_index in range (0, len(ocrd_lines)):
+        for line_index in range(0, len(ocrd_lines)):
             validate_line_token_symbols(line_index, ocrd_lines[line_index])
+
     def validate_ocrd_lines(self, ocrd_lines):
         # Rule 1: The first line starts with 'ocrd process \'
         # Rule 2: Validate the minimum amount of tokens needed
@@ -45,11 +48,12 @@ class OCRD_Validator:
         # Rule 12: Each line except the last one ends with a backslash (BACKSLASH)
         validate_first_line(ocrd_lines[0])
 
-        last_line_number = len(ocrd_lines)-1
+        last_line_number = len(ocrd_lines) - 1
         for line_index in range(1, last_line_number):
             validate_middle_line(line_index, ocrd_lines[line_index])
 
         validate_last_line(last_line_number, ocrd_lines[-1])
+
     def extract_ocrd_commands(self, ocrd_lines):
         ocrd_commands = []
         for line_index in range(1, len(ocrd_lines)):

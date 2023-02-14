@@ -7,6 +7,7 @@ from .constants import (
     PH_VENV_PATH
 )
 
+
 class Nextflow_Process:
     def __init__(self, ocrd_command, index_pos, dockerized=False):
         self.dockerized = dockerized
@@ -19,7 +20,7 @@ class Nextflow_Process:
         self.directives = []
         self.input_params = []
         self.output_params = []
-        
+
     def file_representation(self):
         representation = f'process {self.process_name}' + ' {\n'
 
@@ -46,7 +47,7 @@ class Nextflow_Process:
             representation += f'{SPACES}{SPACES}{self.ocrd_command_bash}\n'
             representation += f'{SPACES}{SPACES}deactivate\n'
         representation += f'{SPACES}{SPACES}"""\n'
-        
+
         representation += '}\n'
 
         return representation
@@ -61,11 +62,11 @@ class Nextflow_Process:
         self.output_params.append(parameter)
 
     def _extract_process_name(self, ocrd_processor_name):
-        return f"{ocrd_processor_name.replace('-','_')}"
+        return f"{ocrd_processor_name.replace('-', '_')}"
 
     def _find_io_files_value_indices(self, ocrd_command):
-        input_index = ocrd_command.index('-I')+1
-        output_index = ocrd_command.index('-O')+1
+        input_index = ocrd_command.index('-I') + 1
+        output_index = ocrd_command.index('-O') + 1
         return input_index, output_index
 
     def _find_io_files_values(self, ocrd_command, in_index, out_index):

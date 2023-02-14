@@ -3,13 +3,16 @@ import click
 from .converter import Converter
 from .ocrd_validator import OCRD_Validator
 
+
 @click.group()
 def cli():
     pass
 
+
 # ./oton/assets/workflow1.txt
 default_input = resource_filename(__name__, 'assets/workflow1.txt')
 default_output = resource_filename(__name__, 'assets/nextflow1.txt')
+
 
 @cli.command("convert", help="Convert an OCR-D workflow to a Nextflow workflow script.")
 @click.option('-I', '--input_path',

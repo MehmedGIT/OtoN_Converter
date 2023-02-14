@@ -5,6 +5,7 @@ from oton.utils import (
     extract_file_lines,
 )
 
+
 def test_line_append():
     """Tests if each NextFlow function appends a number to the processor name
     distinguish processor calls

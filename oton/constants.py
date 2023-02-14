@@ -55,7 +55,7 @@ VALID_CHARS: str = f'-_.{ascii_letters}{digits}'
 # Symbols
 BACKSLASH = '\\'
 COMMA = ','
-QM = '"' # Quotation Mark
+QM = '"'  # Quotation Mark
 SPACES = '  '
 
 DIR_IN: str = 'input_dir'
@@ -74,6 +74,7 @@ PARAMS_KEY_MODELS_PATH: str = 'params.models_path'
 PARAMS_KEY_VENV_PATH: str = 'params.venv_path'
 PARAMS_KEY_WORKSPACE_PATH: str = 'params.workspace_path'
 
+
 def __build_docker_command():
     docker_command = 'docker run --rm'
     docker_command += f' -u \\$(id -u)'
@@ -82,6 +83,7 @@ def __build_docker_command():
     docker_command += f' -w ${PARAMS_KEY_DOCKER_PWD}'
     docker_command += f' -- ${PARAMS_KEY_DOCKER_IMAGE}'
     return docker_command
+
 
 TOML_FILENAME: str = resource_filename(__name__, 'config.toml')
 TOML_FD = open(TOML_FILENAME, mode='rb')
@@ -100,8 +102,10 @@ PARAMS_VAL_DOCKER_VOLUME: str = f'${PARAMS_KEY_WORKSPACE_PATH}:${PARAMS_KEY_DOCK
 PARAMS_VAL_DOCKER_MODELS: str = f'${PARAMS_KEY_MODELS_PATH}:${PARAMS_KEY_DOCKER_MODELS_DIR}'
 PARAMS_VAL_DOCKER_COMMAND: str = __build_docker_command()
 
+
 def __build_repr(parameter, value):
     return f'{parameter} = "{value}"'
+
 
 # Parameters - file representation
 REPR_DSL2: str = 'nextflow.enable.dsl = 2'

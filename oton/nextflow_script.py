@@ -18,6 +18,7 @@ from .constants import (
     REPR_WORKSPACE_PATH
 )
 
+
 class Nextflow_Script:
     def __init__(self):
         self.nf_lines = []
@@ -75,6 +76,6 @@ class Nextflow_Script:
     def __print_nextflow_tokens(self):
         print(f'INFO: lines in the nextflow file: {len(self.nf_lines)}')
         print('INFO: TOKENS ON LINES')
-        for i in range (0, len(self.nf_lines)):
+        for i in range(0, len(self.nf_lines)):
             print(f'nf_lines[{i}]: {self.nf_lines[i]}')
         print('INFO: TOKENS ON LINES END')

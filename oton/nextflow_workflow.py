@@ -4,6 +4,7 @@ from .constants import (
     PARAMS_KEY_METS_PATH
 )
 
+
 class Nextflow_Workflow:
     def __init__(self, workflow_name, nf_processes):
         self.workflow_name = workflow_name

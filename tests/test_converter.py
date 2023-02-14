@@ -2,11 +2,13 @@ from oton.converter import Converter
 from re import sub
 import os
 
+
 def clean_up(path):
     """Cleans up test artifacts from file system
     """
     if os.path.isfile(path):
         os.remove(path)
+
 
 def test_conversion_wo_docker():
     """E2E test for an OCR-D workflow conversion using native ocrd_all
@@ -30,12 +32,12 @@ def test_conversion_wo_docker():
                 ocrd_cis_ocropy_dewarp_6(ocrd_cis_ocropy_segment_5.out, "OCR-D-SEG", "OCR-D-SEG-LINE-RESEG-DEWARP")
                 ocrd_calamari_recognize_7(ocrd_cis_ocropy_dewarp_6.out, "OCR-D-SEG-LINE-RESEG-DEWARP", "OCR-D-OCR")
         }"""
-    expected_normalized = sub(r'\s+','',expected_workflow)
+    expected_normalized = sub(r'\s+', '', expected_workflow)
 
     with open(output_path, mode='r', encoding='utf-8') as fp:
         wf = fp.read()
-        no_tab_string = sub(r'\t+','',wf)
-        no_spaces_result = sub(r'\s+','',no_tab_string)
+        no_tab_string = sub(r'\t+', '', wf)
+        no_spaces_result = sub(r'\s+', '', no_tab_string)
 
     clean_up(output_path)
 
@@ -63,10 +65,11 @@ def test_conversion_with_docker():
 
     assert expected in wf
 
+
 def test_models_volume_for_docker():
     """E2E test for a Docker-base OCR-D workflow conversion with a models directory.
     We test if the resulting NextFlow script has a volume for mounting the text detection models."""
-    
+
     input_path = 'tests/assets/workflow.txt'
     output_path = 'tests/assets/output_docker_workflow.nf'
     dockerized = True
