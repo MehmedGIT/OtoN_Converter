@@ -1,4 +1,4 @@
-from oton.ocrd_validator import OCRD_Validator
+from oton.ocrd_validator import OCRDValidator
 from oton.utils import (
     validate_file_path,
     extract_file_lines,
@@ -30,7 +30,7 @@ def test_workflow_without_docker():
     """E2E test for an OCR-D workflow using native ocrd_all
     """
     input_path = 'tests/assets/workflow.txt'
-    ocrd_validator = OCRD_Validator()
+    ocrd_validator = OCRDValidator()
     file_lines = extract_file_lines(input_path)
     ocrd_lines = ocrd_validator.extract_ocrd_tokens(file_lines)
     ocrd_validator.validate_ocrd_token_symbols(ocrd_lines)

@@ -1,11 +1,11 @@
-from .constants import (
+from oton.constants import (
     SPACES,
 
     PARAMS_KEY_METS_PATH
 )
 
 
-class Nextflow_Workflow:
+class NextflowWorkflow:
     def __init__(self, workflow_name, nf_processes):
         self.workflow_name = workflow_name
         # Nextflow processes

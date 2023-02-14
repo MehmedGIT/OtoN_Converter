@@ -1,7 +1,11 @@
 from pkg_resources import resource_filename
 import click
 from .converter import Converter
-from .ocrd_validator import OCRD_Validator
+from .ocrd_validator import OCRDValidator
+from .utils import (
+    validate_file_path,
+    extract_file_lines,
+)
 
 
 @click.group()
@@ -40,6 +44,11 @@ def convert(input_path, output_path, dockerized):
               show_default=True,
               help='Path to the OCR-D workflow file to be validated.')
 def validate(input_path):
-    OCRD_Validator().extract_and_validate_ocrd_file(input_path)
+    ocrd_validator = OCRDValidator()
+    validate_file_path(input_path)
+    file_lines = extract_file_lines(input_path)
+    ocrd_lines = ocrd_validator.extract_ocrd_tokens(file_lines)
+    ocrd_validator.validate_ocrd_token_symbols(ocrd_lines)
+    ocrd_validator.validate_ocrd_lines(ocrd_lines)
     print(f"Validating: {input_path}")
     print("Validation was successful!")

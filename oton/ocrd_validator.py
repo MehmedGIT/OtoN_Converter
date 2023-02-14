@@ -10,7 +10,7 @@ from .utils import (
 
 # TODO: More refactoring needed - still not satisfied with the readability.
 # Some methods could be simplified with better algorithms
-class OCRD_Validator:
+class OCRDValidator:
     def __init__(self):
         pass
 

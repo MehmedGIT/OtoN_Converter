@@ -1,6 +1,6 @@
-from .nextflow_process import Nextflow_Process
-from .nextflow_workflow import Nextflow_Workflow
-from .constants import (
+from .nextflow_process import NextflowProcess
+from .nextflow_workflow import NextflowWorkflow
+from oton.constants import (
     DIR_IN,
     DIR_OUT,
     METS_FILE,
@@ -19,7 +19,7 @@ from .constants import (
 )
 
 
-class Nextflow_Script:
+class NextflowScript:
     def __init__(self):
         self.nf_lines = []
 
@@ -48,7 +48,7 @@ class Nextflow_Script:
 
         index = 0
         for ocrd_command in ocrd_commands:
-            nextflow_process = Nextflow_Process(ocrd_command, index, dockerized)
+            nextflow_process = NextflowProcess(ocrd_command, index, dockerized)
             nextflow_process.add_directive('maxForks 1')
             nextflow_process.add_input_param(f'path {METS_FILE}')
             nextflow_process.add_input_param(f'val {DIR_IN}')
@@ -63,7 +63,7 @@ class Nextflow_Script:
         return nf_processes
 
     def build_main_workflow(self, nf_processes):
-        nextflow_workflow = Nextflow_Workflow("main", nf_processes)
+        nextflow_workflow = NextflowWorkflow("main", nf_processes)
         self.nf_lines.append(nextflow_workflow.file_representation())
 
     def produce_nextflow_file(self, output_path):

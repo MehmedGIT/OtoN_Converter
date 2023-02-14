@@ -1,4 +1,4 @@
-from .constants import (
+from oton.constants import (
     SPACES,
 
     PH_DIR_IN,
@@ -8,7 +8,7 @@ from .constants import (
 )
 
 
-class Nextflow_Process:
+class NextflowProcess:
     def __init__(self, ocrd_command, index_pos, dockerized=False):
         self.dockerized = dockerized
         self.process_name = self._extract_process_name(ocrd_command[0]) + "_" + str(index_pos)
