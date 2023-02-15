@@ -16,7 +16,7 @@ def cli():
 
 # ./oton/assets/workflow1.txt
 default_input = resource_filename(__name__, 'assets/workflow1.txt')
-default_output = resource_filename(__name__, 'assets/nextflow1.txt')
+default_output = resource_filename(__name__, 'assets/nextflow1.nf')
 
 
 @cli.command("convert", help="Convert an OCR-D workflow to a Nextflow workflow script.")
@@ -31,7 +31,7 @@ default_output = resource_filename(__name__, 'assets/nextflow1.txt')
 @click.option('-D', '--dockerized',
               is_flag=True,
               help='If set, then the dockerized variant of the Nextflow script is generated.')
-def convert(input_path, output_path, dockerized):
+def convert(input_path: str, output_path: str, dockerized: bool):
     converter = Converter()
     print(f"Converting from: {input_path}")
     print(f"Converting to: {output_path}")
@@ -44,7 +44,7 @@ def convert(input_path, output_path, dockerized):
               default=default_input,
               show_default=True,
               help='Path to the OCR-D workflow file to be validated.')
-def validate(input_path):
+def validate(input_path: str):
     ocrd_validator = OCRDValidator()
     validate_file_path(input_path)
     file_lines = extract_file_lines(input_path)

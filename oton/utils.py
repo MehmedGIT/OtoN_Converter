@@ -26,7 +26,7 @@ logging.basicConfig(format=OTON_LOG_FORMAT)
 # could and should be further refined
 
 
-def extract_file_lines(filepath):
+def extract_file_lines(filepath: str):
     file_lines = []
     with open(filepath, mode='r', encoding='utf-8') as ocrd_file:
         for line in ocrd_file:
@@ -46,7 +46,7 @@ def extract_ocrd_tokens(ocrd_lines):
     return ocrd_tokens
 
 
-def extract_line_tokens(line):
+def extract_line_tokens(line) -> List[str]:
     # Rule 1: Each QM and BACKSLASH is a separate token
     # Rule 2: Each ocrd-processor name is a separate token
     # Rule 3: Each -I, -O, and -P is a separate token
@@ -70,7 +70,7 @@ def extract_line_tokens(line):
     return line_tokens
 
 
-def extract_ocrd_commands(ocrd_lines):
+def extract_ocrd_commands(ocrd_lines) -> List[List[str]]:
     ocrd_commands = []
     for line_index in range(1, len(ocrd_lines)):
         ocrd_command = extract_ocrd_command(ocrd_lines[line_index])
@@ -78,7 +78,7 @@ def extract_ocrd_commands(ocrd_lines):
     return ocrd_commands
 
 
-def extract_ocrd_command(line_tokens):
+def extract_ocrd_command(line_tokens) -> List[str]:
     first_qm_index = 0
     last_qm_index = 0
 

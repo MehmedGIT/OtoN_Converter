@@ -1,4 +1,5 @@
 import logging
+from typing import List
 
 from .nextflow_process import NextflowProcess
 from .nextflow_workflow import NextflowWorkflow
@@ -31,7 +32,7 @@ class NextflowScript:
         self.logger.setLevel(logging.getLevelName(OTON_LOG_LEVEL))
         logging.basicConfig(format=OTON_LOG_FORMAT)
 
-    def build_parameters(self, dockerized=False):
+    def build_parameters(self, dockerized: bool = False):
         self.nf_lines.append(REPR_DSL2)
         self.nf_lines.append('')
 
@@ -51,7 +52,7 @@ class NextflowScript:
 
         self.nf_lines.append('')
 
-    def build_nextflow_processes(self, ocrd_commands, dockerized=False):
+    def build_nextflow_processes(self, ocrd_commands: List[List[str]], dockerized: bool = False) -> List[str]:
         nf_processes = []
 
         index = 0
@@ -71,12 +72,12 @@ class NextflowScript:
 
         return nf_processes
 
-    def build_main_workflow(self, nf_processes):
+    def build_main_workflow(self, nf_processes: List[str]):
         nextflow_workflow = NextflowWorkflow("main", nf_processes)
         self.nf_lines.append(nextflow_workflow.file_representation())
 
-    def produce_nextflow_file(self, output_path):
+    def produce_nextflow_file(self, output_path: str):
         # Write Nextflow line tokens to an output file
         with open(output_path, mode='w', encoding='utf-8') as nextflow_file:
-            for token_line in self.nf_lines:
-                nextflow_file.write(f'{token_line}\n')
+            for nextflow_line in self.nf_lines:
+                nextflow_file.write(f'{nextflow_line}\n')

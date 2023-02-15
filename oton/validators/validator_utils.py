@@ -33,7 +33,7 @@ def validate_file_path(filepath: str):
     logger.debug(f"Input file path validated: {filepath}")
 
 
-def validate_first_line(line):
+def validate_first_line(line: List[str]):
     expected = ' '.join(['ocrd', 'process', BACKSLASH])
     got = ' '.join(line)
     if got != expected:
@@ -42,7 +42,7 @@ def validate_first_line(line):
 
 
 # Every line other than the first/last one.
-def validate_middle_line(line_num, line):
+def validate_middle_line(line_num: int, line: List[str]):
     validate_min_amount_of_tokens(line_num, line, min_amount=8)
     validate_QM_tokens(line_num, line, is_last_line=False)
     validate_BACKSLASH_token(line_num, line)
@@ -51,7 +51,7 @@ def validate_middle_line(line_num, line):
     logger.info(f"Line {line_num} was validated successfully")
 
 
-def validate_last_line(line_num, line):
+def validate_last_line(line_num: int, line: List[str]):
     validate_min_amount_of_tokens(line_num, line, min_amount=7)
     validate_QM_tokens(line_num, line, is_last_line=True)
     validate_ocrd_processor_token(line_num, line)
@@ -59,13 +59,13 @@ def validate_last_line(line_num, line):
     logger.info(f"Line {line_num} was validated successfully")
 
 
-def validate_min_amount_of_tokens(line_num, line, min_amount):
+def validate_min_amount_of_tokens(line_num: int, line: List[str], min_amount: int):
     if len(line) < min_amount:
         raise ValueError(f"At least {min_amount} tokens are expected on {line_num} but {len(line)} are available.")
     logger.debug(f"On line {line_num}, {len(line)} tokes were found")
 
 
-def validate_QM_tokens(line_num, line, is_last_line=False):
+def validate_QM_tokens(line_num: int, line: List[str], is_last_line: bool = False):
     # Get the first and last QM tokens of their expected indices
     first_qm_token = line[0]
     last_qm_token = line[-1] if is_last_line else line[-2]
@@ -77,14 +77,14 @@ def validate_QM_tokens(line_num, line, is_last_line=False):
     logger.debug(f"On line {line_num}, QMs were validated")
 
 
-def validate_BACKSLASH_token(line_num, line):
+def validate_BACKSLASH_token(line_num: int, line: List[str]):
     last_token = line[-1]
     if not last_token == BACKSLASH:
         raise ValueError(f"The OCR-D line {line_num} does not end with a Backslash, but with a: {last_token}")
     logger.debug(f"On line {line_num}, backslash token was validated")
 
 
-def validate_ocrd_processor_token(line_num, line):
+def validate_ocrd_processor_token(line_num: int, line: List[str]):
     ocrd_processor_token = line[1]
     ocrd_processor = f"ocrd-{ocrd_processor_token}"
     if ocrd_processor not in OCRD_PROCESSORS:
@@ -93,7 +93,7 @@ def validate_ocrd_processor_token(line_num, line):
 
 
 # Validate input, output and parameter tokens and their arguments
-def validate_iop_tokens(line_num, line):
+def validate_iop_tokens(line_num: int, line: List[str]):
     input_already_found = False  # Track duplicate inputs
     output_already_found = False  # Track duplicate outputs
     # Track arguments passed to input/output/parameter
@@ -149,7 +149,7 @@ def validate_iop_tokens(line_num, line):
         raise ValueError(f"On line {line_num}, missing input token: -I")
 
 
-def validate_iop_follow_up_tokens(line_num, previous_token, next_token, next_token2=None):
+def validate_iop_follow_up_tokens(line_num: int, previous_token: str, next_token: str, next_token2: str = None):
     # Checks the next token/s that come/s after the previous token (either of these: -I, -O, or -P)
     forbidden_follow_ups = [COMMA, QM, BACKSLASH, '-I', '-O', '-P']
 
@@ -169,7 +169,7 @@ def validate_iop_follow_up_tokens(line_num, previous_token, next_token, next_tok
             raise ValueError(f"On line {line_num}, unexpected {previous_token} got follow-up token: {next_token2}")
 
 
-def validate_line_token_symbols(line_index, line):
+def validate_line_token_symbols(line_index: int, line: List[str]):
     for token_index in range(0, len(line)):
         current_token = line[token_index]
         logger.debug(f"Line {line_index}, token validation: {current_token}")

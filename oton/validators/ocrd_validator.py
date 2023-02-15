@@ -1,3 +1,5 @@
+from typing import List
+
 from .validator_utils import (
     validate_first_line,
     validate_middle_line,
@@ -12,7 +14,7 @@ class OCRDValidator:
     def __init__(self):
         pass
 
-    def validate_ocrd_lines(self, ocrd_lines):
+    def validate_ocrd_lines(self, ocrd_lines: List[List[str]]):
         # Token Rules:
         # Rule 1: A single char token must be either: QM or BACKSLASH
         # Rule 2: A double char token must be either: -I, -O, or -P

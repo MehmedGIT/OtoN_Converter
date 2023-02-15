@@ -13,7 +13,7 @@ class Converter:
         pass
 
     @staticmethod
-    def convert_OtoN(input_path, output_path, dockerized=False):
+    def convert_OtoN(input_path: str, output_path: str, dockerized: bool = False):
         ocrd_validator = OCRDValidator()
         validate_file_path(input_path)
         file_lines = extract_file_lines(input_path)

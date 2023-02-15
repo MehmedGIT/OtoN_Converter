@@ -1,21 +1,22 @@
 import logging
+from typing import List
 from ..constants import (
     SPACES,
     PARAMS_KEY_METS_PATH,
     OTON_LOG_LEVEL,
     OTON_LOG_FORMAT
 )
+from .nextflow_process import NextflowProcess
 
 
 class NextflowWorkflow:
-    def __init__(self, workflow_name, nf_processes):
+    def __init__(self, workflow_name: str, nf_processes: List[str]):
         self.logger = logging.getLogger(__name__)
         self.logger.setLevel(logging.getLevelName(OTON_LOG_LEVEL))
         logging.basicConfig(format=OTON_LOG_FORMAT)
 
         self.workflow_name = workflow_name
-        # Nextflow processes
-        self.nf_processes = nf_processes
+        self.nf_processes: List[str] = nf_processes
 
     def file_representation(self):
         representation = 'workflow {\n'
@@ -23,11 +24,14 @@ class NextflowWorkflow:
 
         previous_nfp = None
         for nfp in self.nf_processes:
+            nfp_0 = nfp[0]
+            nfp_1 = nfp[1]
+            nfp_2 = nfp[2]
             if previous_nfp is None:
-                representation += f'{SPACES}{SPACES}{nfp[0]}({PARAMS_KEY_METS_PATH}, {nfp[1]}, {nfp[2]})\n'
+                representation += f'{SPACES}{SPACES}{nfp_0}({PARAMS_KEY_METS_PATH}, {nfp_1}, {nfp_2})\n'
             else:
-                representation += f'{SPACES}{SPACES}{nfp[0]}({previous_nfp}.out, {nfp[1]}, {nfp[2]})\n'
-            previous_nfp = nfp[0]
+                representation += f'{SPACES}{SPACES}{nfp_0}({previous_nfp}.out, {nfp_1}, {nfp_2})\n'
+            previous_nfp = nfp_0
 
         representation += '}\n\n'
 
