@@ -1,15 +1,22 @@
-from oton.constants import (
+import logging
+from ..constants import (
     SPACES,
 
     PH_DIR_IN,
     PH_DIR_OUT,
     PH_DOCKER_COMMAND,
-    PH_VENV_PATH
+    PH_VENV_PATH,
+    OTON_LOG_LEVEL,
+    OTON_LOG_FORMAT
 )
 
 
 class NextflowProcess:
     def __init__(self, ocrd_command, index_pos, dockerized=False):
+        self.logger = logging.getLogger(__name__)
+        self.logger.setLevel(logging.getLevelName(OTON_LOG_LEVEL))
+        logging.basicConfig(format=OTON_LOG_FORMAT)
+
         self.dockerized = dockerized
         self.process_name = self._extract_process_name(ocrd_command[0]) + "_" + str(index_pos)
         in_index, out_index = self._find_io_files_value_indices(ocrd_command)
@@ -50,6 +57,7 @@ class NextflowProcess:
 
         representation += '}\n'
 
+        self.logger.debug(f"\n{representation}")
         return representation
 
     def add_directive(self, directive):
@@ -62,7 +70,9 @@ class NextflowProcess:
         self.output_params.append(parameter)
 
     def _extract_process_name(self, ocrd_processor_name):
-        return f"{ocrd_processor_name.replace('-', '_')}"
+        process_name = ocrd_processor_name.replace('-', '_')
+        self.logger.debug(f"\nGenerating NF process name: {ocrd_processor_name} -> {process_name}")
+        return process_name
 
     def _find_io_files_value_indices(self, ocrd_command):
         input_index = ocrd_command.index('-I') + 1
@@ -75,6 +85,8 @@ class NextflowProcess:
         return ocrd_command_input, ocrd_command_output
 
     def _replace_io_files_with_placeholders(self, ocrd_command, input_index, output_index):
+        self.logger.debug(f"Replacing: {ocrd_command[input_index]} with {PH_DIR_IN}")
         ocrd_command[input_index] = PH_DIR_IN
+        self.logger.debug(f"Replacing: {ocrd_command[output_index]} with {PH_DIR_OUT}")
         ocrd_command[output_index] = PH_DIR_OUT
         return ocrd_command

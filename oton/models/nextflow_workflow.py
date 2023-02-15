@@ -1,12 +1,18 @@
-from oton.constants import (
+import logging
+from ..constants import (
     SPACES,
-
-    PARAMS_KEY_METS_PATH
+    PARAMS_KEY_METS_PATH,
+    OTON_LOG_LEVEL,
+    OTON_LOG_FORMAT
 )
 
 
 class NextflowWorkflow:
     def __init__(self, workflow_name, nf_processes):
+        self.logger = logging.getLogger(__name__)
+        self.logger.setLevel(logging.getLevelName(OTON_LOG_LEVEL))
+        logging.basicConfig(format=OTON_LOG_FORMAT)
+
         self.workflow_name = workflow_name
         # Nextflow processes
         self.nf_processes = nf_processes
@@ -25,4 +31,6 @@ class NextflowWorkflow:
 
         representation += '}\n\n'
 
+        self.logger.debug(f"\n{representation}")
+        self.logger.info(f"Successfully created Nextflow Workflow: {self.workflow_name}")
         return representation

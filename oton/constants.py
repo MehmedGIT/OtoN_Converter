@@ -1,8 +1,12 @@
+from os import environ
 from pkg_resources import resource_filename
 from string import ascii_letters, digits
 import tomli
 
 __all__ = [
+    "OTON_LOG_LEVEL",
+    "OTON_LOG_FORMAT",
+
     "BACKSLASH",
     "COMMA",
     "QM",
@@ -48,6 +52,9 @@ __all__ = [
     "PH_DIR_OUT",
     "PH_VENV_PATH"
 ]
+
+OTON_LOG_LEVEL = environ.get("OTON_LOG_LEVEL", "INFO")
+OTON_LOG_FORMAT = '%(asctime)s %(levelname)s %(name)s:%(funcName)s: %(lineno)s: %(message)s'
 
 # Valid characters to be used in the ocrd file
 VALID_CHARS: str = f'-_.{ascii_letters}{digits}'

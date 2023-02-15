@@ -1,8 +1,10 @@
 from oton.models.nextflow_process import NextflowProcess
-from oton.ocrd_validator import OCRDValidator
+from oton.validators.ocrd_validator import OCRDValidator
+from oton.validators.validator_utils import validate_file_path
 from oton.utils import (
-    validate_file_path,
     extract_file_lines,
+    extract_ocrd_tokens,
+    extract_ocrd_commands
 )
 
 
@@ -14,10 +16,9 @@ def test_line_append():
     ocrd_validator = OCRDValidator()
     validate_file_path(input_path)
     file_lines = extract_file_lines(input_path)
-    ocrd_lines = ocrd_validator.extract_ocrd_tokens(file_lines)
-    ocrd_validator.validate_ocrd_token_symbols(ocrd_lines)
+    ocrd_lines = extract_ocrd_tokens(file_lines)
     ocrd_validator.validate_ocrd_lines(ocrd_lines)
-    ocrd_commands = ocrd_validator.extract_ocrd_commands(ocrd_lines)
+    ocrd_commands = extract_ocrd_commands(ocrd_lines)
 
     result = []
 

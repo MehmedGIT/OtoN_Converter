@@ -13,7 +13,7 @@ setup(
     author_email='mehmed.mustafa@gwdg.de',
     url='https://github.com/MehmedGIT/OtoN_Converter',
     license='Apache License 2.0',
-    packages=['oton'],
+    packages=['oton', 'oton.models', 'oton.validators'],
     package_data={'': ['assets/*', 'config.toml']},
     install_requires=install_requires,
     entry_points={

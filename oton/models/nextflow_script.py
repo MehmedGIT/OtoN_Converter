@@ -1,9 +1,14 @@
+import logging
+
 from .nextflow_process import NextflowProcess
 from .nextflow_workflow import NextflowWorkflow
-from oton.constants import (
+from ..constants import (
     DIR_IN,
     DIR_OUT,
     METS_FILE,
+
+    OTON_LOG_FORMAT,
+    OTON_LOG_LEVEL,
 
     REPR_DSL2,
     REPR_DOCKER_COMMAND,
@@ -22,6 +27,9 @@ from oton.constants import (
 class NextflowScript:
     def __init__(self):
         self.nf_lines = []
+        self.logger = logging.getLogger(__name__)
+        self.logger.setLevel(logging.getLevelName(OTON_LOG_LEVEL))
+        logging.basicConfig(format=OTON_LOG_FORMAT)
 
     def build_parameters(self, dockerized=False):
         self.nf_lines.append(REPR_DSL2)
@@ -58,6 +66,7 @@ class NextflowScript:
 
             # This list is used when building the workflow
             nf_processes.append(nextflow_process.repr_in_workflow)
+            self.logger.info(f"Successfully created Nextflow Process: {nextflow_process.process_name}")
             index += 1
 
         return nf_processes
@@ -67,15 +76,7 @@ class NextflowScript:
         self.nf_lines.append(nextflow_workflow.file_representation())
 
     def produce_nextflow_file(self, output_path):
-        # self.__print_nextflow_tokens()
         # Write Nextflow line tokens to an output file
         with open(output_path, mode='w', encoding='utf-8') as nextflow_file:
             for token_line in self.nf_lines:
                 nextflow_file.write(f'{token_line}\n')
-
-    def __print_nextflow_tokens(self):
-        print(f'INFO: lines in the nextflow file: {len(self.nf_lines)}')
-        print('INFO: TOKENS ON LINES')
-        for i in range(0, len(self.nf_lines)):
-            print(f'nf_lines[{i}]: {self.nf_lines[i]}')
-        print('INFO: TOKENS ON LINES END')

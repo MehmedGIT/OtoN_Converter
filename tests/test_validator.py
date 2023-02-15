@@ -1,7 +1,7 @@
-from oton.ocrd_validator import OCRDValidator
+from oton.validators.ocrd_validator import OCRDValidator
 from oton.utils import (
-    validate_file_path,
     extract_file_lines,
+    extract_ocrd_tokens
 )
 
 
@@ -32,8 +32,7 @@ def test_workflow_without_docker():
     input_path = 'tests/assets/workflow.txt'
     ocrd_validator = OCRDValidator()
     file_lines = extract_file_lines(input_path)
-    ocrd_lines = ocrd_validator.extract_ocrd_tokens(file_lines)
-    ocrd_validator.validate_ocrd_token_symbols(ocrd_lines)
+    ocrd_lines = extract_ocrd_tokens(file_lines)
     ocrd_validator.validate_ocrd_lines(ocrd_lines)
 
     assert ocrd_lines == get_expected_output()

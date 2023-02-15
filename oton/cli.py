@@ -1,10 +1,11 @@
 from pkg_resources import resource_filename
 import click
 from .converter import Converter
-from .ocrd_validator import OCRDValidator
+from .validators.ocrd_validator import OCRDValidator
+from .validators.validator_utils import validate_file_path
 from .utils import (
-    validate_file_path,
     extract_file_lines,
+    extract_ocrd_tokens
 )
 
 
@@ -35,7 +36,7 @@ def convert(input_path, output_path, dockerized):
     print(f"Converting from: {input_path}")
     print(f"Converting to: {output_path}")
     converter.convert_OtoN(input_path, output_path, dockerized)
-    print("Convertion was successful!")
+    print("Conversion was successful!")
 
 
 @cli.command("validate", help="Validate an OCR-D workflow txt file.")
@@ -47,8 +48,7 @@ def validate(input_path):
     ocrd_validator = OCRDValidator()
     validate_file_path(input_path)
     file_lines = extract_file_lines(input_path)
-    ocrd_lines = ocrd_validator.extract_ocrd_tokens(file_lines)
-    ocrd_validator.validate_ocrd_token_symbols(ocrd_lines)
+    ocrd_lines = extract_ocrd_tokens(file_lines)
     ocrd_validator.validate_ocrd_lines(ocrd_lines)
     print(f"Validating: {input_path}")
     print("Validation was successful!")
