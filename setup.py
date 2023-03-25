@@ -10,10 +10,10 @@ setup(
     long_description=open('README.md').read(),
     long_description_content_type='text/markdown',
     author='Mehmed Mustafa',
-    author_email='mehmed.mustafa@gwdg.de',
+    author_email='mehmed.n.mustafa@gmail.com',
     url='https://github.com/MehmedGIT/OtoN_Converter',
     license='Apache License 2.0',
-    packages=['oton', 'oton.models', 'oton.validators'],
+    packages=['oton', 'oton.assets', 'oton.models', 'oton.validators'],
     package_data={'': ['assets/*', 'config.toml']},
     install_requires=install_requires,
     entry_points={

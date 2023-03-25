@@ -1,3 +1,4 @@
+from pkg_resources import resource_filename
 from oton.converter import Converter
 from re import sub
 import os
@@ -14,12 +15,10 @@ def test_conversion_wo_docker():
     """E2E test for an OCR-D workflow conversion using native ocrd_all
     """
 
-    input_path = 'tests/assets/workflow.txt'
-    output_path = 'tests/assets/output_workflow.nf'
-    dockerized = False
+    input_path = resource_filename(__name__, 'assets/workflow.txt')
+    output_path = resource_filename(__name__, 'assets/output_workflow.nf')
 
-    converter = Converter()
-    converter.convert_OtoN(input_path=input_path, output_path=output_path, dockerized=dockerized)
+    Converter().convert_OtoN(input_path=input_path, output_path=output_path, dockerized=True)
 
     expected_workflow = """workflow {
             main:
@@ -49,13 +48,10 @@ def test_conversion_with_docker():
     We test for success by looking for a exemplary line that is executed by Docker.
     """
 
-    input_path = 'tests/assets/workflow.txt'
-    output_path = 'tests/assets/output_docker_workflow.nf'
-    dockerized = True
+    input_path = resource_filename(__name__, 'assets/workflow.txt')
+    output_path = resource_filename(__name__, 'assets/output_docker_workflow.nf')
 
-    converter = Converter()
-    converter.convert_OtoN(input_path=input_path, output_path=output_path, dockerized=dockerized)
-
+    Converter().convert_OtoN(input_path=input_path, output_path=output_path, dockerized=True)
     expected = """${params.docker_command} ocrd-cis-ocropy-binarize -I ${input_dir} -O ${output_dir}"""
 
     with open(output_path, mode='r', encoding='utf-8') as fp:
@@ -70,13 +66,10 @@ def test_models_volume_for_docker():
     """E2E test for a Docker-base OCR-D workflow conversion with a models directory.
     We test if the resulting NextFlow script has a volume for mounting the text detection models."""
 
-    input_path = 'tests/assets/workflow.txt'
-    output_path = 'tests/assets/output_docker_workflow.nf'
-    dockerized = True
+    input_path = resource_filename(__name__, 'assets/workflow.txt')
+    output_path = resource_filename(__name__, 'assets/output_docker_workflow.nf')
 
-    converter = Converter()
-    converter.convert_OtoN(input_path=input_path, output_path=output_path, dockerized=dockerized)
-
+    Converter().convert_OtoN(input_path=input_path, output_path=output_path, dockerized=True)
     expected = "docker run --rm -u \\$(id -u) -v $params.docker_volume -v $params.docker_models -w $params.docker_pwd -- $params.docker_image"
 
     with open(output_path, mode='r', encoding='utf-8') as fp:

@@ -14,11 +14,10 @@ class Converter:
 
     @staticmethod
     def convert_OtoN(input_path: str, output_path: str, dockerized: bool = False):
-        ocrd_validator = OCRDValidator()
         validate_file_path(input_path)
         file_lines = extract_file_lines(input_path)
         ocrd_lines = extract_ocrd_tokens(file_lines)
-        ocrd_validator.validate_ocrd_lines(ocrd_lines)
+        OCRDValidator().validate_ocrd_lines(ocrd_lines)
         ocrd_commands = extract_ocrd_commands(ocrd_lines)
 
         nextflow_script = NextflowScript()
