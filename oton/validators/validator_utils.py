@@ -3,12 +3,14 @@ from os.path import exists, isfile
 from typing import List
 
 from ..constants import (
+    OTON_LOG_LEVEL,
+    OTON_LOG_FORMAT
+)
+from .constants import (
     BACKSLASH,
     COMMA,
     QM,
-    VALID_CHARS,
-    OTON_LOG_LEVEL,
-    OTON_LOG_FORMAT
+    VALID_CHARS
 )
 from .ocrd_processors_list import OCRD_PROCESSORS
 

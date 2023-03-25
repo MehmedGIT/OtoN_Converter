@@ -14,7 +14,7 @@ setup(
     url='https://github.com/MehmedGIT/OtoN_Converter',
     license='Apache License 2.0',
     packages=['oton', 'oton.assets', 'oton.models', 'oton.validators'],
-    package_data={'': ['assets/*', 'config.toml']},
+    package_data={'': ['assets/*']},
     install_requires=install_requires,
     entry_points={
         'console_scripts': [

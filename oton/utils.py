@@ -1,8 +1,10 @@
 import logging
 from typing import List
 
+from validators.constants import (
+    QM
+)
 from .constants import (
-    QM,
     OTON_LOG_FORMAT,
     OTON_LOG_LEVEL
 )

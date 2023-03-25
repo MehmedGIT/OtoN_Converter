@@ -1,14 +1,15 @@
 import logging
 from typing import List
 from ..constants import (
-    SPACES,
-
+    OTON_LOG_LEVEL,
+    OTON_LOG_FORMAT,
+    SPACES
+)
+from .constants import (
     PH_DIR_IN,
     PH_DIR_OUT,
     PH_DOCKER_COMMAND,
     PH_VENV_PATH,
-    OTON_LOG_LEVEL,
-    OTON_LOG_FORMAT
 )
 
 

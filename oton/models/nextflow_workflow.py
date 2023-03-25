@@ -1,12 +1,13 @@
 import logging
 from typing import List
 from ..constants import (
-    SPACES,
-    PARAMS_KEY_METS_PATH,
     OTON_LOG_LEVEL,
-    OTON_LOG_FORMAT
+    OTON_LOG_FORMAT,
+    SPACES
 )
-from .nextflow_process import NextflowProcess
+from .constants import (
+    PARAMS_KEY_METS_PATH
+)
 
 
 class NextflowWorkflow:

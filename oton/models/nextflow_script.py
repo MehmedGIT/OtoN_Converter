@@ -1,15 +1,14 @@
 import logging
 from typing import List
 
-from .nextflow_process import NextflowProcess
-from .nextflow_workflow import NextflowWorkflow
 from ..constants import (
+    OTON_LOG_FORMAT,
+    OTON_LOG_LEVEL,
+)
+from .constants import (
     DIR_IN,
     DIR_OUT,
     METS_FILE,
-
-    OTON_LOG_FORMAT,
-    OTON_LOG_LEVEL,
 
     REPR_DSL2,
     REPR_DOCKER_COMMAND,
@@ -23,6 +22,8 @@ from ..constants import (
     REPR_VENV_PATH,
     REPR_WORKSPACE_PATH
 )
+from .nextflow_process import NextflowProcess
+from .nextflow_workflow import NextflowWorkflow
 
 
 class NextflowScript:
