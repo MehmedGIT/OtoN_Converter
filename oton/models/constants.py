@@ -38,6 +38,7 @@ __all__ = [
     "REPR_VENV_PATH",
     "REPR_WORKSPACE_PATH",
 
+    "SPACES"
 ]
 
 # Parameter keys
@@ -103,3 +104,4 @@ PH_DOCKER_COMMAND: str = f'${BS[0]}{PARAMS_KEY_DOCKER_COMMAND}{BS[1]}'
 PH_DIR_IN: str = f'${BS[0]}{DIR_IN}{BS[1]}'
 PH_DIR_OUT: str = f'${BS[0]}{DIR_OUT}{BS[1]}'
 PH_VENV_PATH: str = f'${BS[0]}{PARAMS_KEY_VENV_PATH}{BS[1]}'
+SPACES = '  '

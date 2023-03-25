@@ -3,10 +3,10 @@ from typing import List
 from ..constants import (
     OTON_LOG_LEVEL,
     OTON_LOG_FORMAT,
-    SPACES
 )
 from .constants import (
-    PARAMS_KEY_METS_PATH
+    PARAMS_KEY_METS_PATH,
+    SPACES
 )
 
 
