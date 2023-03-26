@@ -1,6 +1,6 @@
 import logging
 from os.path import exists, isfile
-from typing import List
+from typing import List, Tuple
 
 from ..constants import (
     OTON_LOG_LEVEL,
@@ -12,14 +12,12 @@ from .constants import (
     QM,
     VALID_CHARS
 )
-from .ocrd_processors_list import OCRD_PROCESSORS
 
 __all__ = [
     "validate_file_path",
-    "validate_first_line",
-    "validate_middle_line",
-    "validate_last_line",
+    "validate_ocrd_process_command",
     "validate_line_token_symbols",
+    "validate_iop_tokens"
 ]
 
 logger = logging.getLogger(__name__)
@@ -35,74 +33,25 @@ def validate_file_path(filepath: str):
     logger.debug(f"Input file path validated: {filepath}")
 
 
-def validate_first_line(line: List[str]):
-    expected = ' '.join(['ocrd', 'process', BACKSLASH])
-    got = ' '.join(line)
-    if got != expected:
-        raise ValueError(f"Invalid first line. Expected: '{expected}', got: '{got}'")
+def validate_ocrd_process_command(line: str):
+    expected = 'ocrd process'
+    if line != expected:
+        raise ValueError(f"Invalid first line. Expected: '{expected}', got: '{line}'")
     logger.info(f"Line 0 was validated successfully")
 
 
-# Every line other than the first/last one.
-def validate_middle_line(line_num: int, line: List[str]):
-    validate_min_amount_of_tokens(line_num, line, min_amount=8)
-    validate_QM_tokens(line_num, line, is_last_line=False)
-    validate_BACKSLASH_token(line_num, line)
-    validate_ocrd_processor_token(line_num, line)
-    validate_iop_tokens(line_num, line)
-    logger.info(f"Line {line_num} was validated successfully")
-
-
-def validate_last_line(line_num: int, line: List[str]):
-    validate_min_amount_of_tokens(line_num, line, min_amount=7)
-    validate_QM_tokens(line_num, line, is_last_line=True)
-    validate_ocrd_processor_token(line_num, line)
-    validate_iop_tokens(line_num, line)
-    logger.info(f"Line {line_num} was validated successfully")
-
-
-def validate_min_amount_of_tokens(line_num: int, line: List[str], min_amount: int):
-    if len(line) < min_amount:
-        raise ValueError(f"At least {min_amount} tokens are expected on {line_num} but {len(line)} are available.")
-    logger.debug(f"On line {line_num}, {len(line)} tokes were found")
-
-
-def validate_QM_tokens(line_num: int, line: List[str], is_last_line: bool = False):
-    # Get the first and last QM tokens of their expected indices
-    first_qm_token = line[0]
-    last_qm_token = line[-1] if is_last_line else line[-2]
-
-    if not first_qm_token == QM:
-        raise ValueError(f"The OCR-D command line {line_num} does not start with a QM, but with a: {first_qm_token}")
-    if not last_qm_token == QM:
-        raise ValueError(f"The OCR-D command line {line_num} does not end with a QM, but with a: {last_qm_token}")
-    logger.debug(f"On line {line_num}, QMs were validated")
-
-
-def validate_BACKSLASH_token(line_num: int, line: List[str]):
-    last_token = line[-1]
-    if not last_token == BACKSLASH:
-        raise ValueError(f"The OCR-D line {line_num} does not end with a Backslash, but with a: {last_token}")
-    logger.debug(f"On line {line_num}, backslash token was validated")
-
-
-def validate_ocrd_processor_token(line_num: int, line: List[str]):
-    ocrd_processor_token = line[1]
-    ocrd_processor = f"ocrd-{ocrd_processor_token}"
-    if ocrd_processor not in OCRD_PROCESSORS:
-        raise ValueError(f"Unknown OCR-D processor token on line {line_num}: {ocrd_processor_token}")
-    logger.debug(f"OCR-D processor token validated: {ocrd_processor_token}")
-
-
 # Validate input, output and parameter tokens and their arguments
-def validate_iop_tokens(line_num: int, line: List[str]):
+def validate_iop_tokens(line_num: int, line: List[str]) -> Tuple[str, str, dict]:
     input_already_found = False  # Track duplicate inputs
     output_already_found = False  # Track duplicate outputs
     # Track arguments passed to input/output/parameter
     # to avoid duplicate consideration of tokens
     processed_tokens = []
+    return_input_str = ""
+    return_output_str = ""
+    return_params = {}
 
-    for token_index in range(2, len(line)):
+    for token_index in range(0, len(line)):
         current_token = line[token_index]
         logger.debug(f"Trying to validate token on line {line_num}: {current_token}")
         if current_token in (QM, BACKSLASH):
@@ -122,6 +71,7 @@ def validate_iop_tokens(line_num: int, line: List[str]):
             processed_tokens.append(next_token)
             input_already_found = True
             logger.debug(f"Input token pair validated: {current_token} {next_token}")
+            return_input_str = next_token
         elif current_token == '-O':
             if output_already_found:
                 raise ValueError(f"Only one such token is allowed on line {line_num}: {current_token}")
@@ -133,6 +83,7 @@ def validate_iop_tokens(line_num: int, line: List[str]):
             processed_tokens.append(next_token)
             output_already_found = True
             logger.debug(f"Output token pair validated: {current_token} {next_token}")
+            return_output_str = next_token
         elif current_token == '-P':
             try:
                 next_token = line[token_index + 1]
@@ -143,12 +94,15 @@ def validate_iop_tokens(line_num: int, line: List[str]):
                                           next_token=next_token, next_token2=next_token2)
             processed_tokens.append(next_token)
             processed_tokens.append(next_token2)
+            return_params[next_token] = next_token2
             logger.debug(f"Parameter tokens validated: {current_token} {next_token} {next_token2}")
         else:
             raise ValueError(f"Unexpected token found on line {line_num}: {current_token}")
 
     if not input_already_found:
         raise ValueError(f"On line {line_num}, missing input token: -I")
+
+    return return_input_str, return_output_str, return_params
 
 
 def validate_iop_follow_up_tokens(line_num: int, previous_token: str, next_token: str, next_token2: str = None):

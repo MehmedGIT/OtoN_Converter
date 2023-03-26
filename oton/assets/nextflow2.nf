@@ -56,7 +56,7 @@ process ocrd_skimage_denoise_2 {
   script:
     """
     source "${params.venv_path}"
-    ocrd-skimage-denoise -I ${input_dir} -O ${output_dir} -P level-of-operation page
+    ocrd-skimage-denoise -I ${input_dir} -O ${output_dir} -p '{"level-of-operation": "page"}'
     deactivate
     """
 }
@@ -75,7 +75,7 @@ process ocrd_tesserocr_deskew_3 {
   script:
     """
     source "${params.venv_path}"
-    ocrd-tesserocr-deskew -I ${input_dir} -O ${output_dir} -P operation_level page
+    ocrd-tesserocr-deskew -I ${input_dir} -O ${output_dir} -p '{"operation_level": "page"}'
     deactivate
     """
 }
@@ -94,7 +94,7 @@ process ocrd_tesserocr_segment_4 {
   script:
     """
     source "${params.venv_path}"
-    ocrd-tesserocr-segment -I ${input_dir} -O ${output_dir} -P shrink_polygons true
+    ocrd-tesserocr-segment -I ${input_dir} -O ${output_dir} -p '{"shrink_polygons": "true"}'
     deactivate
     """
 }
@@ -132,7 +132,7 @@ process ocrd_tesserocr_recognize_6 {
   script:
     """
     source "${params.venv_path}"
-    ocrd-tesserocr-recognize -I ${input_dir} -O ${output_dir} -P textequiv_level glyph -P overwrite_segments true -P model GT4HistOCR_50000000.997_191951
+    ocrd-tesserocr-recognize -I ${input_dir} -O ${output_dir} -p '{"textequiv_level": "glyph", "overwrite_segments": "true", "model": "GT4HistOCR_50000000.997_191951"}'
     deactivate
     """
 }

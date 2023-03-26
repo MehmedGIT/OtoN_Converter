@@ -45,7 +45,7 @@ def test_conversion_wo_docker():
 
 def test_conversion_with_docker():
     """E2E test for an OCR-D workflow conversion using the Docker flag.
-    We test for success by looking for a exemplary line that is executed by Docker.
+    We test for success by looking for an exemplary line that is executed by Docker.
     """
 
     input_path = resource_filename(__name__, 'assets/workflow.txt')
@@ -56,9 +56,7 @@ def test_conversion_with_docker():
 
     with open(output_path, mode='r', encoding='utf-8') as fp:
         wf = fp.read()
-
     clean_up(output_path)
-
     assert expected in wf
 
 
@@ -71,10 +69,7 @@ def test_models_volume_for_docker():
 
     Converter().convert_OtoN(input_path=input_path, output_path=output_path, dockerized=True)
     expected = "docker run --rm -u \\$(id -u) -v $params.docker_volume -v $params.docker_models -w $params.docker_pwd -- $params.docker_image"
-
     with open(output_path, mode='r', encoding='utf-8') as fp:
         wf = fp.read()
-
     clean_up(output_path)
-
     assert expected in wf

@@ -1,11 +1,5 @@
 from oton.models.nextflow_process import NextflowProcess
 from oton.validators.ocrd_validator import OCRDValidator
-from oton.validators.validator_utils import validate_file_path
-from oton.utils import (
-    extract_file_lines,
-    extract_ocrd_tokens,
-    extract_ocrd_commands
-)
 
 
 def test_line_append():
@@ -13,16 +7,12 @@ def test_line_append():
     distinguish processor calls
     """
     input_path = 'tests/assets/workflow_with_duplicate_processors.txt'
-    validate_file_path(input_path)
-    file_lines = extract_file_lines(input_path)
-    ocrd_lines = extract_ocrd_tokens(file_lines)
-    OCRDValidator().validate_ocrd_lines(ocrd_lines)
-    ocrd_commands = extract_ocrd_commands(ocrd_lines)
+    validator = OCRDValidator()
+    validator.validate(input_path)
 
     result = []
-
-    for ocrd_command in ocrd_commands:
-        index_pos = ocrd_commands.index(ocrd_command)
+    for ocrd_command in validator.processors:
+        index_pos = validator.processors.index(ocrd_command)
         nextflow_process = NextflowProcess(ocrd_command, index_pos, dockerized=False)
         result.append(nextflow_process.process_name)
 

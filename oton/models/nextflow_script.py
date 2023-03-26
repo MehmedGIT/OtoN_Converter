@@ -1,6 +1,7 @@
 import logging
 from typing import List
 
+from ..validators.ocrd_validator import ProcessorCallArguments
 from ..constants import (
     OTON_LOG_FORMAT,
     OTON_LOG_LEVEL,
@@ -53,12 +54,12 @@ class NextflowScript:
 
         self.nf_lines.append('')
 
-    def build_nextflow_processes(self, ocrd_commands: List[List[str]], dockerized: bool = False) -> List[str]:
+    def build_nextflow_processes(self, ocrd_processor: List[ProcessorCallArguments], dockerized: bool = False) -> List[str]:
         nf_processes = []
 
         index = 0
-        for ocrd_command in ocrd_commands:
-            nextflow_process = NextflowProcess(ocrd_command, index, dockerized)
+        for processor in ocrd_processor:
+            nextflow_process = NextflowProcess(processor, index, dockerized)
             nextflow_process.add_directive('maxForks 1')
             nextflow_process.add_input_param(f'path {METS_FILE}')
             nextflow_process.add_input_param(f'val {DIR_IN}')

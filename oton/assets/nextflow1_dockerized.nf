@@ -57,7 +57,7 @@ process ocrd_skimage_binarize_2 {
 
   script:
     """
-    ${params.docker_command} ocrd-skimage-binarize -I ${input_dir} -O ${output_dir} -P method li
+    ${params.docker_command} ocrd-skimage-binarize -I ${input_dir} -O ${output_dir} -p '{"method": "li"}'
     """
 }
 
@@ -74,7 +74,7 @@ process ocrd_skimage_denoise_3 {
 
   script:
     """
-    ${params.docker_command} ocrd-skimage-denoise -I ${input_dir} -O ${output_dir} -P level-of-operation page
+    ${params.docker_command} ocrd-skimage-denoise -I ${input_dir} -O ${output_dir} -p '{"level-of-operation": "page"}'
     """
 }
 
@@ -91,7 +91,7 @@ process ocrd_tesserocr_deskew_4 {
 
   script:
     """
-    ${params.docker_command} ocrd-tesserocr-deskew -I ${input_dir} -O ${output_dir} -P operation_level page
+    ${params.docker_command} ocrd-tesserocr-deskew -I ${input_dir} -O ${output_dir} -p '{"operation_level": "page"}'
     """
 }
 
@@ -108,7 +108,7 @@ process ocrd_cis_ocropy_segment_5 {
 
   script:
     """
-    ${params.docker_command} ocrd-cis-ocropy-segment -I ${input_dir} -O ${output_dir} -P level-of-operation page
+    ${params.docker_command} ocrd-cis-ocropy-segment -I ${input_dir} -O ${output_dir} -p '{"level-of-operation": "page"}'
     """
 }
 
@@ -142,7 +142,7 @@ process ocrd_calamari_recognize_7 {
 
   script:
     """
-    ${params.docker_command} ocrd-calamari-recognize -I ${input_dir} -O ${output_dir} -P checkpoint_dir qurator-gt4histocr-1.0
+    ${params.docker_command} ocrd-calamari-recognize -I ${input_dir} -O ${output_dir} -p '{"checkpoint_dir": "qurator-gt4histocr-1.0"}'
     """
 }
 
