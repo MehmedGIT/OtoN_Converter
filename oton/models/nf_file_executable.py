@@ -23,11 +23,11 @@ from .constants import (
     REPR_VENV_PATH,
     REPR_WORKSPACE_PATH
 )
-from .nextflow_process import NextflowProcess
-from .nextflow_workflow import NextflowWorkflow
+from .nf_block_process import NextflowBlockProcess
+from .nf_block_workflow import NextflowBlockWorkflow
 
 
-class NextflowScript:
+class NextflowFileExecutable:
     def __init__(self):
         self.nf_lines = []
         self.logger = logging.getLogger(__name__)
@@ -59,24 +59,24 @@ class NextflowScript:
 
         index = 0
         for processor in ocrd_processor:
-            nextflow_process = NextflowProcess(processor, index, dockerized)
-            nextflow_process.add_directive('maxForks 1')
-            nextflow_process.add_input_param(f'path {METS_FILE}')
-            nextflow_process.add_input_param(f'val {DIR_IN}')
-            nextflow_process.add_input_param(f'val {DIR_OUT}')
-            nextflow_process.add_output_param(f'path {METS_FILE}')
-            self.nf_lines.append(nextflow_process.file_representation())
+            nf_process_block = NextflowBlockProcess(processor, index, dockerized)
+            nf_process_block.add_directive('maxForks 1')
+            nf_process_block.add_input_param(f'path {METS_FILE}')
+            nf_process_block.add_input_param(f'val {DIR_IN}')
+            nf_process_block.add_input_param(f'val {DIR_OUT}')
+            nf_process_block.add_output_param(f'path {METS_FILE}')
+            self.nf_lines.append(nf_process_block.file_representation())
 
             # This list is used when building the workflow
-            nf_processes.append(nextflow_process.repr_in_workflow)
-            self.logger.info(f"Successfully created Nextflow Process: {nextflow_process.process_name}")
+            nf_processes.append(nf_process_block.repr_in_workflow)
+            self.logger.info(f"Successfully created Nextflow Process: {nf_process_block.nf_process_name}")
             index += 1
 
         return nf_processes
 
     def build_main_workflow(self, nf_processes: List[str]):
-        nextflow_workflow = NextflowWorkflow("main", nf_processes)
-        self.nf_lines.append(nextflow_workflow.file_representation())
+        nf_workflow_block = NextflowBlockWorkflow("main", nf_processes)
+        self.nf_lines.append(nf_workflow_block.file_representation())
 
     def produce_nextflow_file(self, output_path: str):
         # Write Nextflow line tokens to an output file

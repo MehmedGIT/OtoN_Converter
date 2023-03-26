@@ -10,7 +10,7 @@ from .constants import (
 )
 
 
-class NextflowWorkflow:
+class NextflowBlockWorkflow:
     def __init__(self, workflow_name: str, nf_processes: List[str]):
         self.logger = logging.getLogger(__name__)
         self.logger.setLevel(logging.getLevelName(OTON_LOG_LEVEL))

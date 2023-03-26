@@ -1,4 +1,4 @@
-from .models import NextflowScript
+from .models import NextflowFileExecutable
 from .validators.ocrd_validator import OCRDValidator
 
 
@@ -11,8 +11,8 @@ class Converter:
         validator = OCRDValidator()
         validator.validate(input_path)
 
-        nextflow_script = NextflowScript()
-        nextflow_script.build_parameters(dockerized)
-        nf_processes = nextflow_script.build_nextflow_processes(validator.processors, dockerized)
-        nextflow_script.build_main_workflow(nf_processes)
-        nextflow_script.produce_nextflow_file(output_path)
+        nf_file_executable = NextflowFileExecutable()
+        nf_file_executable.build_parameters(dockerized)
+        nf_processes = nf_file_executable.build_nextflow_processes(validator.processors, dockerized)
+        nf_file_executable.build_main_workflow(nf_processes)
+        nf_file_executable.produce_nextflow_file(output_path)

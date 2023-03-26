@@ -1,9 +1,9 @@
 __all__ = [
-  "NextflowProcess",
-  "NextflowWorkflow",
-  "NextflowScript"
+  "NextflowBlockProcess",
+  "NextflowBlockWorkflow",
+  "NextflowFileExecutable"
 ]
 
-from .nextflow_process import NextflowProcess
-from .nextflow_workflow import NextflowWorkflow
-from .nextflow_script import NextflowScript
+from .nf_block_process import NextflowBlockProcess
+from .nf_block_workflow import NextflowBlockWorkflow
+from .nf_file_executable import NextflowFileExecutable

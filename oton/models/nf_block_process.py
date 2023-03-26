@@ -13,30 +13,30 @@ from .constants import (
 )
 
 
-class NextflowProcess:
-    def __init__(self, processor: ProcessorCallArguments, index_pos: int, dockerized: bool = False):
+class NextflowBlockProcess:
+    def __init__(self, processor_call_arguments: ProcessorCallArguments, index_pos: int, dockerized: bool = False):
         self.logger = logging.getLogger(__name__)
         self.logger.setLevel(logging.getLevelName(OTON_LOG_LEVEL))
         logging.basicConfig(format=OTON_LOG_FORMAT)
 
         self.dockerized = dockerized
-        self.process_name = processor.executable.replace('-', '_') + "_" + str(index_pos)
+        self.nf_process_name = processor_call_arguments.executable.replace('-', '_') + "_" + str(index_pos)
         self.repr_in_workflow = [
-            self.process_name,
-            f'"{processor.input_file_grps}"',
-            f'"{processor.output_file_grps}"'
+            self.nf_process_name,
+            f'"{processor_call_arguments.input_file_grps}"',
+            f'"{processor_call_arguments.output_file_grps}"'
         ]
 
-        processor.input_file_grps = PH_DIR_IN
-        processor.output_file_grps = PH_DIR_OUT
+        processor_call_arguments.input_file_grps = PH_DIR_IN
+        processor_call_arguments.output_file_grps = PH_DIR_OUT
 
-        self.ocrd_command_bash = f'{processor}'
+        self.ocrd_command_bash = f'{processor_call_arguments}'
         self.directives = []
         self.input_params = []
         self.output_params = []
 
     def file_representation(self):
-        representation = f'process {self.process_name}' + ' {\n'
+        representation = f'process {self.nf_process_name}' + ' {\n'
 
         for directive in self.directives:
             representation += f'{SPACES}{directive}\n'
