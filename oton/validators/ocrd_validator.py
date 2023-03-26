@@ -1,3 +1,4 @@
+from copy import deepcopy
 import json
 from typing import List, Optional
 from shlex import split as shlex_split
@@ -50,10 +51,18 @@ class ProcessorCallArguments:
         return str_repr
 
 
-def validate_processor_params_with_core(processor_args: ProcessorCallArguments):
+def validate_processor_params_with_core(processor_args: ProcessorCallArguments, overwrite_with_defaults=False):
+    # The ParameterValidator overwrites the missing parameters with their defaults
+    backup_curr_params = deepcopy(processor_args.parameters)
+
     report = ParameterValidator(processor_args.ocrd_tool_json).validate(processor_args.parameters)
     if not report.is_valid:
         raise Exception(report.errors)
+
+    # Remove the overwritten defaults to keep the produced NF executable file less populated
+    # Note: The defaults, still get overwritten in run-time
+    if not overwrite_with_defaults:
+        processor_args.parameters = deepcopy(backup_curr_params)
     return report
 
 
@@ -61,11 +70,11 @@ def validate_all_processors(ocrd_process_command: str, processors: List[Processo
     prev_output_file_grps = []
 
     first_processor = processors[0]
-    validate_processor_params_with_core(first_processor)
+    validate_processor_params_with_core(first_processor, overwrite_with_defaults=False)
 
     prev_output_file_grps += first_processor.output_file_grps.split(',')
     for processor in processors[1:]:
-        validate_processor_params_with_core(processor)
+        validate_processor_params_with_core(processor, overwrite_with_defaults=False)
         for input_file_grp in processor.input_file_grps.split(','):
             if input_file_grp not in prev_output_file_grps:
                 if "GT" not in input_file_grp:
