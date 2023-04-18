@@ -2,7 +2,6 @@ nextflow.enable.dsl = 2
 
 params.workspace_path = "$projectDir/ocrd-workspace/"
 params.mets_path = "$projectDir/ocrd-workspace/mets.xml"
-params.venv_path = "\$HOME/venv37-ocrd/bin/activate"
 
 process ocrd_cis_ocropy_binarize_0 {
   maxForks 1
@@ -17,9 +16,7 @@ process ocrd_cis_ocropy_binarize_0 {
 
   script:
     """
-    source "${params.venv_path}"
     ocrd-cis-ocropy-binarize -I ${input_dir} -O ${output_dir}
-    deactivate
     """
 }
 
@@ -36,9 +33,7 @@ process ocrd_anybaseocr_crop_1 {
 
   script:
     """
-    source "${params.venv_path}"
     ocrd-anybaseocr-crop -I ${input_dir} -O ${output_dir}
-    deactivate
     """
 }
 
@@ -55,9 +50,7 @@ process ocrd_skimage_binarize_2 {
 
   script:
     """
-    source "${params.venv_path}"
     ocrd-skimage-binarize -I ${input_dir} -O ${output_dir} -p '{"method": "li"}'
-    deactivate
     """
 }
 
@@ -74,9 +67,7 @@ process ocrd_skimage_denoise_3 {
 
   script:
     """
-    source "${params.venv_path}"
     ocrd-skimage-denoise -I ${input_dir} -O ${output_dir} -p '{"level-of-operation": "page"}'
-    deactivate
     """
 }
 
@@ -93,9 +84,7 @@ process ocrd_tesserocr_deskew_4 {
 
   script:
     """
-    source "${params.venv_path}"
     ocrd-tesserocr-deskew -I ${input_dir} -O ${output_dir} -p '{"operation_level": "page"}'
-    deactivate
     """
 }
 
@@ -112,9 +101,7 @@ process ocrd_cis_ocropy_segment_5 {
 
   script:
     """
-    source "${params.venv_path}"
     ocrd-cis-ocropy-segment -I ${input_dir} -O ${output_dir} -p '{"level-of-operation": "page"}'
-    deactivate
     """
 }
 
@@ -131,9 +118,7 @@ process ocrd_cis_ocropy_dewarp_6 {
 
   script:
     """
-    source "${params.venv_path}"
     ocrd-cis-ocropy-dewarp -I ${input_dir} -O ${output_dir}
-    deactivate
     """
 }
 
@@ -150,9 +135,7 @@ process ocrd_calamari_recognize_7 {
 
   script:
     """
-    source "${params.venv_path}"
     ocrd-calamari-recognize -I ${input_dir} -O ${output_dir} -p '{"checkpoint_dir": "qurator-gt4histocr-1.0"}'
-    deactivate
     """
 }
 

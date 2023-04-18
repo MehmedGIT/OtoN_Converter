@@ -20,7 +20,6 @@ from .constants import (
     REPR_DOCKER_VOLUME,
     REPR_METS_PATH,
     REPR_MODELS_PATH,
-    REPR_VENV_PATH,
     REPR_WORKSPACE_PATH
 )
 from .nf_block_process import NextflowBlockProcess
@@ -49,8 +48,6 @@ class NextflowFileExecutable:
             self.nf_lines.append(REPR_DOCKER_MODELS)
             self.nf_lines.append(REPR_DOCKER_IMAGE)
             self.nf_lines.append(REPR_DOCKER_COMMAND)
-        else:
-            self.nf_lines.append(REPR_VENV_PATH)
 
         self.nf_lines.append('')
 

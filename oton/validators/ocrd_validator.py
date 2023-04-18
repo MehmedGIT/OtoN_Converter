@@ -43,9 +43,7 @@ class ProcessorCallArguments:
             raise ValueError(f"Processor '{executable}' requires 'output_file_grp' but none was provided.")
 
     def __str__(self):
-        str_repr = f"{self.executable} " \
-                   f"-I {self.input_file_grps} " \
-                   f"-O {self.output_file_grps}"
+        str_repr = f"{self.executable} -I {self.input_file_grps} -O {self.output_file_grps}"
         if self.parameters:
             str_repr += f" -p '{json.dumps(self.parameters)}'"
         return str_repr

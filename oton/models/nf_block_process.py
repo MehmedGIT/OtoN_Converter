@@ -8,7 +8,6 @@ from .constants import (
     PH_DIR_IN,
     PH_DIR_OUT,
     PH_DOCKER_COMMAND,
-    PH_VENV_PATH,
     SPACES
 )
 
@@ -57,9 +56,7 @@ class NextflowBlockProcess:
         if self.dockerized:
             representation += f'{SPACES}{SPACES}{PH_DOCKER_COMMAND} {self.ocrd_command_bash}\n'
         else:
-            representation += f'{SPACES}{SPACES}source "{PH_VENV_PATH}"\n'
             representation += f'{SPACES}{SPACES}{self.ocrd_command_bash}\n'
-            representation += f'{SPACES}{SPACES}deactivate\n'
         representation += f'{SPACES}{SPACES}"""\n'
 
         representation += '}\n'

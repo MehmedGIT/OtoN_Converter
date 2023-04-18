@@ -2,7 +2,6 @@ nextflow.enable.dsl = 2
 
 params.workspace_path = "$projectDir/ocrd-workspace/"
 params.mets_path = "$projectDir/ocrd-workspace/mets.xml"
-params.venv_path = "\$HOME/venv37-ocrd/bin/activate"
 
 process ocrd_dinglehopper_0 {
   maxForks 1
@@ -17,9 +16,7 @@ process ocrd_dinglehopper_0 {
 
   script:
     """
-    source "${params.venv_path}"
     ocrd-dinglehopper -I ${input_dir} -O ${output_dir}
-    deactivate
     """
 }
 
@@ -36,9 +33,7 @@ process ocrd_dinglehopper_1 {
 
   script:
     """
-    source "${params.venv_path}"
     ocrd-dinglehopper -I ${input_dir} -O ${output_dir}
-    deactivate
     """
 }
 
@@ -55,9 +50,7 @@ process ocrd_dinglehopper_2 {
 
   script:
     """
-    source "${params.venv_path}"
     ocrd-dinglehopper -I ${input_dir} -O ${output_dir}
-    deactivate
     """
 }
 
