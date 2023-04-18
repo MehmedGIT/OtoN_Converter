@@ -1,4 +1,4 @@
-from oton.models.nextflow_process import NextflowProcess
+from oton.models import NextflowBlockProcess
 from oton.validators.ocrd_validator import OCRDValidator
 
 
@@ -13,8 +13,8 @@ def test_line_append():
     result = []
     for ocrd_command in validator.processors:
         index_pos = validator.processors.index(ocrd_command)
-        nextflow_process = NextflowProcess(ocrd_command, index_pos, dockerized=False)
-        result.append(nextflow_process.process_name)
+        nextflow_process = NextflowBlockProcess(ocrd_command, index_pos, dockerized=False)
+        result.append(nextflow_process.nf_process_name)
 
     expected = [
         "ocrd_olena_binarize_0",
