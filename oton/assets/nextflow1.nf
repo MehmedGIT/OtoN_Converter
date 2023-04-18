@@ -16,7 +16,7 @@ process ocrd_cis_ocropy_binarize_0 {
 
   script:
     """
-    ocrd-cis-ocropy-binarize -I ${input_dir} -O ${output_dir}
+    ocrd-cis-ocropy-binarize -m ${mets_file} -I ${input_dir} -O ${output_dir}
     """
 }
 
@@ -33,7 +33,7 @@ process ocrd_anybaseocr_crop_1 {
 
   script:
     """
-    ocrd-anybaseocr-crop -I ${input_dir} -O ${output_dir}
+    ocrd-anybaseocr-crop -m ${mets_file} -I ${input_dir} -O ${output_dir}
     """
 }
 
@@ -50,7 +50,7 @@ process ocrd_skimage_binarize_2 {
 
   script:
     """
-    ocrd-skimage-binarize -I ${input_dir} -O ${output_dir} -p '{"method": "li"}'
+    ocrd-skimage-binarize -m ${mets_file} -I ${input_dir} -O ${output_dir} -p '{"method": "li"}'
     """
 }
 
@@ -67,7 +67,7 @@ process ocrd_skimage_denoise_3 {
 
   script:
     """
-    ocrd-skimage-denoise -I ${input_dir} -O ${output_dir} -p '{"level-of-operation": "page"}'
+    ocrd-skimage-denoise -m ${mets_file} -I ${input_dir} -O ${output_dir} -p '{"level-of-operation": "page"}'
     """
 }
 
@@ -84,7 +84,7 @@ process ocrd_tesserocr_deskew_4 {
 
   script:
     """
-    ocrd-tesserocr-deskew -I ${input_dir} -O ${output_dir} -p '{"operation_level": "page"}'
+    ocrd-tesserocr-deskew -m ${mets_file} -I ${input_dir} -O ${output_dir} -p '{"operation_level": "page"}'
     """
 }
 
@@ -101,7 +101,7 @@ process ocrd_cis_ocropy_segment_5 {
 
   script:
     """
-    ocrd-cis-ocropy-segment -I ${input_dir} -O ${output_dir} -p '{"level-of-operation": "page"}'
+    ocrd-cis-ocropy-segment -m ${mets_file} -I ${input_dir} -O ${output_dir} -p '{"level-of-operation": "page"}'
     """
 }
 
@@ -118,7 +118,7 @@ process ocrd_cis_ocropy_dewarp_6 {
 
   script:
     """
-    ocrd-cis-ocropy-dewarp -I ${input_dir} -O ${output_dir}
+    ocrd-cis-ocropy-dewarp -m ${mets_file} -I ${input_dir} -O ${output_dir}
     """
 }
 
@@ -135,7 +135,7 @@ process ocrd_calamari_recognize_7 {
 
   script:
     """
-    ocrd-calamari-recognize -I ${input_dir} -O ${output_dir} -p '{"checkpoint_dir": "qurator-gt4histocr-1.0"}'
+    ocrd-calamari-recognize -m ${mets_file} -I ${input_dir} -O ${output_dir} -p '{"checkpoint_dir": "qurator-gt4histocr-1.0"}'
     """
 }
 

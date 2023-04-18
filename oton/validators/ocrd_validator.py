@@ -24,7 +24,8 @@ class ProcessorCallArguments:
         executable: str,
         input_file_grps: str,
         output_file_grps: Optional[str] = None,
-        parameters: Optional[dict] = None
+        parameters: Optional[dict] = None,
+        mets_file_path: str = ""
     ):
         if not executable:
             raise ValueError(f"Missing executable name")
@@ -32,6 +33,7 @@ class ProcessorCallArguments:
             raise ValueError(f"Missing input file group of '{executable}'")
 
         self.executable = f'ocrd-{executable}'
+        self.mets_file_path = mets_file_path
         self.input_file_grps = input_file_grps
         self.output_file_grps = output_file_grps
         self.parameters = parameters
@@ -43,7 +45,10 @@ class ProcessorCallArguments:
             raise ValueError(f"Processor '{executable}' requires 'output_file_grp' but none was provided.")
 
     def __str__(self):
-        str_repr = f"{self.executable} -I {self.input_file_grps} -O {self.output_file_grps}"
+        str_repr = f"{self.executable}" \
+                   f" -m {self.mets_file_path}" \
+                   f" -I {self.input_file_grps}" \
+                   f" -O {self.output_file_grps}"
         if self.parameters:
             str_repr += f" -p '{json.dumps(self.parameters)}'"
         return str_repr

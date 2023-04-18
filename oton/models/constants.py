@@ -22,6 +22,7 @@ __all__ = [
     "PH_DOCKER_COMMAND",
     "PH_DIR_IN",
     "PH_DIR_OUT",
+    "PH_METS_FILE",
 
     "REPR_DSL2",
     "REPR_DOCKER_COMMAND",
@@ -96,4 +97,5 @@ BS: str = '{}'
 PH_DOCKER_COMMAND: str = f'${BS[0]}{PARAMS_KEY_DOCKER_COMMAND}{BS[1]}'
 PH_DIR_IN: str = f'${BS[0]}{DIR_IN}{BS[1]}'
 PH_DIR_OUT: str = f'${BS[0]}{DIR_OUT}{BS[1]}'
+PH_METS_FILE: str = f'${BS[0]}{METS_FILE}{BS[1]}'
 SPACES = '  '

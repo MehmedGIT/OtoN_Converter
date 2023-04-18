@@ -7,6 +7,7 @@ from ..constants import (
 from .constants import (
     PH_DIR_IN,
     PH_DIR_OUT,
+    PH_METS_FILE,
     PH_DOCKER_COMMAND,
     SPACES
 )
@@ -28,6 +29,7 @@ class NextflowBlockProcess:
 
         processor_call_arguments.input_file_grps = PH_DIR_IN
         processor_call_arguments.output_file_grps = PH_DIR_OUT
+        processor_call_arguments.mets_file_path = PH_METS_FILE
 
         self.ocrd_command_bash = f'{processor_call_arguments}'
         self.directives = []

@@ -16,7 +16,7 @@ process ocrd_dinglehopper_0 {
 
   script:
     """
-    ocrd-dinglehopper -I ${input_dir} -O ${output_dir}
+    ocrd-dinglehopper -m ${mets_file} -I ${input_dir} -O ${output_dir}
     """
 }
 
@@ -33,7 +33,7 @@ process ocrd_dinglehopper_1 {
 
   script:
     """
-    ocrd-dinglehopper -I ${input_dir} -O ${output_dir}
+    ocrd-dinglehopper -m ${mets_file} -I ${input_dir} -O ${output_dir}
     """
 }
 
@@ -50,7 +50,7 @@ process ocrd_dinglehopper_2 {
 
   script:
     """
-    ocrd-dinglehopper -I ${input_dir} -O ${output_dir}
+    ocrd-dinglehopper -m ${mets_file} -I ${input_dir} -O ${output_dir}
     """
 }
 
