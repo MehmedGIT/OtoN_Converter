@@ -6,7 +6,7 @@ NEXTFLOW_SCRIPT="$SCRIPT_DIR/tests/execution_tests/dummy_ws_docker_test/nextflow
 WORKSPACE_PATH="$SCRIPT_DIR/tests/execution_tests/dummy_ws_docker_test/data"
 METS_PATH="$WORKSPACE_PATH/mets.xml"
 
-# NOTE: The required models are already downloaded/prepared:
+# NOTE: The required models are already downloaded/prepared to avoid downloading them with every run:
 # docker run --rm -v "/home/mm/ocrd_models/:/usr/local/share/" -- ocrd/all:maximum ocrd resmgr download '*'
 # docker run --rm -v "/home/mm/ocrd_models/:/usr/local/share/" -- ocrd/all:maximum ocrd resmgr download ocrd-tesserocr-recognize '*'
 
