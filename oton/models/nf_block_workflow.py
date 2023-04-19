@@ -6,6 +6,7 @@ from ..constants import (
 )
 from .constants import (
     PARAMS_KEY_METS_PATH,
+    PARAMS_KEY_INPUT_FILE_GRP,
     SPACES
 )
 
@@ -29,12 +30,12 @@ class NextflowBlockWorkflow:
             nfp_1 = nfp[1]
             nfp_2 = nfp[2]
             if previous_nfp is None:
-                representation += f'{SPACES}{SPACES}{nfp_0}({PARAMS_KEY_METS_PATH}, {nfp_1}, {nfp_2})\n'
+                representation += f'{SPACES}{SPACES}{nfp_0}({PARAMS_KEY_METS_PATH}, {PARAMS_KEY_INPUT_FILE_GRP}, {nfp_2})\n'
             else:
                 representation += f'{SPACES}{SPACES}{nfp_0}({previous_nfp}.out, {nfp_1}, {nfp_2})\n'
             previous_nfp = nfp_0
 
-        representation += '}\n\n'
+        representation += '}'
 
         self.logger.debug(f"\n{representation}")
         self.logger.info(f"Successfully created Nextflow Workflow: {self.workflow_name}")
