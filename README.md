@@ -111,6 +111,11 @@ Also check the Nextflow script example with passed docker parameters [here](http
     ```
     The Nextflow script executes docker calls to the specified OCR-D processors
 
+3. Clean the produced files
+```bash
+./clean.sh
+```
+
 Currently, there are no known issues or bugs. Please report in case you find some.
 
 ## 6. Nextflow script parameters
