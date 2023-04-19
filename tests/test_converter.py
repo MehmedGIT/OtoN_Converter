@@ -22,7 +22,7 @@ def test_conversion_wo_docker():
 
     expected_workflow = """workflow {
             main:
-                ocrd_cis_ocropy_binarize_0(params.mets_path, "OCR-D-IMG", "OCR-D-BIN")
+                ocrd_cis_ocropy_binarize_0(params.mets_path, params.input_file_grp, "OCR-D-BIN")
                 ocrd_anybaseocr_crop_1(ocrd_cis_ocropy_binarize_0.out, "OCR-D-BIN", "OCR-D-CROP")
                 ocrd_skimage_binarize_2(ocrd_anybaseocr_crop_1.out, "OCR-D-CROP", "OCR-D-BIN2")
                 ocrd_skimage_denoise_3(ocrd_skimage_binarize_2.out, "OCR-D-BIN2", "OCR-D-BIN-DENOISE")
