@@ -10,11 +10,8 @@ from ..constants import OCRD_ALL_JSON
 from .validator_utils import (
     validate_file_path,
     validate_ocrd_process_command,
-    validate_iop_tokens
-
 )
 from ..utils import read_from_file
-from .ocrd_processors_list import OCRD_PROCESSORS
 
 
 # This class is based on ocrd.task_sequence.ProcessorTask
@@ -54,7 +51,7 @@ class ProcessorCallArguments:
         return str_repr
 
 
-def validate_processor_params_with_core(processor_args: ProcessorCallArguments, overwrite_with_defaults=False):
+def validate_processor_params(processor_args: ProcessorCallArguments, overwrite_with_defaults=False):
     # The ParameterValidator overwrites the missing parameters with their defaults
     backup_curr_params = deepcopy(processor_args.parameters)
 
@@ -69,24 +66,25 @@ def validate_processor_params_with_core(processor_args: ProcessorCallArguments, 
     return report
 
 
-def validate_all_processors(ocrd_process_command: str, processors: List[ProcessorCallArguments]):
+def validate_all_processors(processors: List[ProcessorCallArguments]):
     prev_output_file_grps = []
 
     first_processor = processors[0]
-    validate_processor_params_with_core(first_processor, overwrite_with_defaults=False)
+    validate_processor_params(first_processor, overwrite_with_defaults=False)
 
     prev_output_file_grps += first_processor.output_file_grps.split(',')
     for processor in processors[1:]:
-        validate_processor_params_with_core(processor, overwrite_with_defaults=False)
+        validate_processor_params(processor, overwrite_with_defaults=False)
         for input_file_grp in processor.input_file_grps.split(','):
             if input_file_grp not in prev_output_file_grps:
+                # TODO: This is not ideal...
                 if "GT" not in input_file_grp:
                     if "OCR-D-OCR" not in input_file_grp:
                         raise ValueError(f"Input file group not produced by previous steps: {input_file_grp}")
         prev_output_file_grps += processor.output_file_grps.split(',')
 
 
-def parse_arguments_with_core(processor_arguments) -> ProcessorCallArguments:
+def parse_arguments(processor_arguments) -> ProcessorCallArguments:
     tokens = shlex_split(processor_arguments)
     executable = f"{tokens.pop(0)}"
     input_file_grps = []
@@ -115,15 +113,6 @@ def parse_arguments_with_core(processor_arguments) -> ProcessorCallArguments:
     return ProcessorCallArguments(executable, input_file_grps, output_file_grps, parameters)
 
 
-def parse_arguments(line_num, processor_arguments) -> ProcessorCallArguments:
-    tokens = shlex_split(processor_arguments)
-    executable = f"{tokens.pop(0)}"
-    if f'ocrd-{executable}' not in OCRD_PROCESSORS:
-        raise ValueError(f"Unknown OCR-D processor token on line {line_num}: {executable}")
-    input_file_grps, output_file_grps, parameters = validate_iop_tokens(line_num, tokens)
-    return ProcessorCallArguments(executable, input_file_grps, output_file_grps, parameters)
-
-
 class OCRDValidator:
     def __init__(self):
         self.ocrd_process_command: str = ''
@@ -132,29 +121,6 @@ class OCRDValidator:
     def validate(self, input_file: str):
         validate_file_path(input_file)
         self.ocrd_process_command, processor_tasks = read_from_file(input_file)
-        print(f"OCRD_PROCESS: {self.ocrd_process_command}")
-        for task in processor_tasks:
-            print(f"TASK: [{task}]")
-
-        line_num = 0
-        validate_ocrd_process_command(self.ocrd_process_command)
-        for processor_arguments in processor_tasks:
-            processor_call_arguments: ProcessorCallArguments = parse_arguments(line_num, processor_arguments)
-            line_num += 1
-            self.processors.append(processor_call_arguments)
-
-        for processor in self.processors:
-            print(f"Processor: [{processor}]")
-
-
-class OCRDValidatorWithCore:
-    def __init__(self):
-        self.ocrd_process_command: str = ''
-        self.processors: List[ProcessorCallArguments] = []
-
-    def validate(self, input_file: str):
-        validate_file_path(input_file)
-        self.ocrd_process_command, processor_tasks = read_from_file(input_file)
 
         print(f"OCRD_PROCESS: {self.ocrd_process_command}")
         for task in processor_tasks:
@@ -162,10 +128,10 @@ class OCRDValidatorWithCore:
 
         validate_ocrd_process_command(self.ocrd_process_command)
         for processor_arguments in processor_tasks:
-            processor_call_arguments: ProcessorCallArguments = parse_arguments_with_core(processor_arguments)
+            processor_call_arguments: ProcessorCallArguments = parse_arguments(processor_arguments)
             self.processors.append(processor_call_arguments)
 
         for processor in self.processors:
             print(f"ProcessorCore: [{processor}]")
 
-        validate_all_processors(self.ocrd_process_command, self.processors)
+        validate_all_processors(self.processors)

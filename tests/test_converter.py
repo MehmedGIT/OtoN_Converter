@@ -52,7 +52,7 @@ def test_conversion_with_docker():
     output_path = resource_filename(__name__, 'assets/output_docker_workflow.nf')
 
     Converter().convert_OtoN(input_path=input_path, output_path=output_path, dockerized=True)
-    expected = """${params.docker_command} ocrd-cis-ocropy-binarize -I ${input_dir} -O ${output_dir}"""
+    expected = """${params.docker_command} ocrd-cis-ocropy-binarize -m ${mets_file} -I ${input_dir} -O ${output_dir}"""
 
     with open(output_path, mode='r', encoding='utf-8') as fp:
         wf = fp.read()
@@ -61,7 +61,7 @@ def test_conversion_with_docker():
 
 
 def test_models_volume_for_docker():
-    """E2E test for a Docker-base OCR-D workflow conversion with a models directory.
+    """E2E test for a Docker-base OCR-D workflow conversion with a models' directory.
     We test if the resulting NextFlow script has a volume for mounting the text detection models."""
 
     input_path = resource_filename(__name__, 'assets/workflow.txt')
