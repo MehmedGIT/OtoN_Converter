@@ -136,6 +136,6 @@ Check the docker call example with parameters [here](https://github.com/MehmedGI
 
 ## 7. Planned extensions
 
-5.1. Support options to ocrd processes (i.e., the first line of the OCR-D process workflow txt) (Check [here](https://github.com/MehmedGIT/OtoN_Converter/issues/3))
+1. Support options to ocrd processes (i.e., the first line of the OCR-D process workflow txt) (Check [here](https://github.com/MehmedGIT/OtoN_Converter/issues/3))
 
-5.2. Support Singularity calls inside the HPC environment - since Docker containers cannot be executed inside the HPC environment, the Docker containers have to be wrapped by Singularity containers.
+2. Support Singularity calls inside the HPC environment - since Docker containers cannot be executed inside the HPC environment, the Docker containers have to be wrapped by Singularity containers.

@@ -29,7 +29,6 @@ from .nf_block_workflow import NextflowBlockWorkflow
 
 class NextflowFileExecutable:
     def __init__(self):
-        self.nf_lines = []
         self.nf_lines_parameters = []
         self.nf_lines_processes = []
         self.nf_lines_workflow = []
