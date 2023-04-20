@@ -5,7 +5,7 @@ Converter from basic OCR-D process workflow (`.txt`) to Nextflow workflow script
 ## 1. Installation of OtoN from source
 1. Clone specific tag of the repository and enter it:
 ```commandline
-git clone -b v1.1.0 git@github.com:MehmedGIT/OtoN_Converter.git
+git clone -b v1.1.1 git@github.com:MehmedGIT/OtoN_Converter.git
 cd OtoN_Converter
 ```
 2. Create a new python virtual environment and activate it:
